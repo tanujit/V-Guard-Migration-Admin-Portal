@@ -1,0 +1,39 @@
+{
+  "name": "vguard-rishta-ops-portal",
+  "private": true,
+  "version": "0.1.0",
+  "description": "V-Guard Rishta Enterprise Operations & Governance Portal (Phase 1: foundation, shell, dashboard)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b",
+    "preview": "vite preview",
+    "test:schemes": "esbuild tests/schemes.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/schemes.test.cjs && node node_modules/.cache/schemes.test.cjs",
+    "test:wallet": "esbuild tests/wallet.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/wallet.test.cjs && node node_modules/.cache/wallet.test.cjs",
+    "test:comms": "esbuild tests/comms.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/comms.test.cjs && node node_modules/.cache/comms.test.cjs",
+    "seed:approval-steps": "esbuild scripts/generate-approval-steps.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/gen-approval-steps.cjs && node node_modules/.cache/gen-approval-steps.cjs",
+    "test:schemes:gaps": "esbuild tests/schemes.gaps.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/schemes.gaps.cjs && node node_modules/.cache/schemes.gaps.cjs",
+    "test:gifts": "esbuild tests/gifts.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/gifts.test.cjs && node node_modules/.cache/gifts.test.cjs",
+    "test:risk": "esbuild tests/risk.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/risk.test.cjs && node node_modules/.cache/risk.test.cjs",
+    "test:ops": "esbuild tests/ops.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/ops.test.cjs && node node_modules/.cache/ops.test.cjs",
+    "test:analytics": "esbuild tests/analytics.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/analytics.test.cjs && node node_modules/.cache/analytics.test.cjs"
+  },
+  "dependencies": {
+    "lucide-react": "0.460.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.28.0",
+    "recharts": "2.15.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "typescript": "5.6.3",
+    "vite": "5.4.11"
+  },
+  "overrides": {
+    "rollup": "npm:@rollup/wasm-node@4.28.1"
+  }
+}

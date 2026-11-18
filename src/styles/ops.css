@@ -1,0 +1,27 @@
+/* Phase 11 — Integration monitoring. Health colours follow the shared status tones; simulated and
+   derived values are labelled, and nothing glows. */
+
+.text-warning { color: var(--warning-strong, #b26a00); font-weight: 600; }
+
+.ops-derived { display: inline-flex; align-items: center; gap: 4px; padding: 0 6px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--text-secondary); border: 1px solid var(--hairline); white-space: nowrap; }
+
+.ops-figs { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+.ops-figs--stack { grid-template-columns: 1fr; }
+.ops-fig { display: flex; flex-direction: column; gap: 4px; }
+.ops-fig__label { font-size: var(--fs-12); color: var(--text-secondary); }
+.ops-fig__value { font-size: 18px; font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.ops-trace { list-style: none; margin: 0; padding: 0 0 0 4px; }
+.ops-trace__step { position: relative; padding: 0 0 16px 20px; border-left: 2px solid var(--hairline); }
+.ops-trace__step:last-child { border-left-color: transparent; padding-bottom: 0; }
+.ops-trace__step::before { content: ""; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--chart-neutral-1, #9a9a9a); }
+.ops-trace__step--success::before { background: var(--positive-strong); }
+.ops-trace__step--failed::before { background: var(--negative-strong); }
+.ops-trace__step--pending::before { background: var(--vg-amber, #e5a000); }
+.ops-trace__head { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+
+.ops-stack { margin: 12px 0 0; padding: 12px; max-height: 280px; overflow: auto; border-radius: 8px; background: var(--vg-offwhite, #f6f5f2); border: 1px solid var(--hairline); font-family: var(--font-mono); font-size: 12px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.ops-subhead { margin: 16px 0 4px; font-size: 14px; font-weight: 600; }
+
+.table tr.is-selected td { background: var(--vg-yellow-wash); }

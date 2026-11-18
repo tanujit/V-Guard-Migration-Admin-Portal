@@ -1,0 +1,26 @@
+/* Phase 10 — Fraud & risk. Red is kept for genuinely blocked / critical states; unverified signals
+   stay amber or neutral, and simulated outputs are visibly labelled. */
+
+.risk-vector { display: inline-flex; align-items: center; padding: 1px 8px; border-radius: 999px; font-size: var(--fs-12); font-weight: 600; white-space: nowrap; border: 1px solid var(--hairline); background: var(--bg-card); color: var(--text-primary); }
+.risk-vector--device_farming,
+.risk-vector--duplicate_identity,
+.risk-vector--cross_programme_kyc { border-color: rgba(229, 160, 0, 0.45); }
+.risk-vector--tampered_qr,
+.risk-vector--redemption_abuse { background: var(--vg-yellow-wash); }
+.risk-source { font-size: var(--fs-12); font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+.risk-source--predictive { color: var(--info); }
+.risk-source--rule { color: var(--vg-charcoal); }
+.risk-sim { display: inline-flex; padding: 0 6px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--text-muted); border: 1px dashed var(--hairline); white-space: nowrap; }
+
+.selection-bar { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 12px 14px; margin-bottom: 12px; border-radius: var(--r-control, 10px); background: var(--vg-yellow-wash); border: 1px solid rgba(229, 160, 0, 0.35); }
+
+.geo-plot { display: block; max-width: 420px; }
+.geo-plot__bg { fill: var(--vg-offwhite); stroke: var(--hairline); }
+.geo-plot__line { stroke: var(--vg-charcoal); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.geo-plot__pt--accent { fill: var(--vg-yellow); stroke: var(--vg-black); stroke-width: 1; }
+.geo-plot__pt--dark { fill: var(--vg-charcoal); }
+.geo-plot__pt--negative { fill: var(--negative-strong); }
+.geo-plot__label { font-size: 10px; fill: var(--text-secondary); }
+
+.recon-compare td,
+.recon-compare th { vertical-align: middle; }

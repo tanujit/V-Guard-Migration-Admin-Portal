@@ -1,0 +1,309 @@
+/* =====================================================================
+   Master data & scanning configuration (Phase 4) — built on the V-Guard tokens
+   ===================================================================== */
+
+.approval-link {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.warn-text {
+  color: var(--warning);
+}
+.valid-ok {
+  margin: 0;
+  color: var(--positive);
+}
+
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.quick-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--r-card);
+  background: var(--bg-card);
+  border: 1px solid var(--hairline);
+  font-weight: 600;
+  font-size: var(--fs-14);
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.quick-link:hover {
+  border-color: rgba(229, 160, 0, 0.5);
+  box-shadow: var(--shadow-card);
+}
+.quick-link svg {
+  color: var(--accent-ink);
+}
+
+.hierarchy-preview {
+  padding: 12px 16px;
+  border-radius: var(--r-card);
+  background: var(--bg-raised);
+}
+.hierarchy-preview p {
+  margin: 0 0 4px;
+}
+.hierarchy-preview ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: var(--fs-13);
+}
+.hierarchy-preview li.is-on {
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+
+/* Validation lists */
+.vlist {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0;
+}
+.vlist__block {
+  padding: 10px 14px;
+  border-radius: var(--r-control);
+  font-size: var(--fs-13);
+}
+.vlist__block ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 2px;
+}
+.vlist__title {
+  margin: 0;
+  font-weight: 600;
+}
+.vlist__block--error {
+  background: var(--negative-soft);
+  color: var(--negative);
+}
+.vlist__block--warn {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.vlist__block--info {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.impact-box {
+  display: grid;
+  gap: 12px;
+}
+.ref-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  font-size: var(--fs-13);
+}
+.ref-list--pad {
+  padding: 12px 20px 16px 36px;
+}
+
+/* Hierarchy tree */
+.tree,
+.tree__children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tree__children {
+  margin-left: 20px;
+  padding-left: 12px;
+  border-left: 1px dashed var(--hairline-strong);
+}
+.tree__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: var(--fs-13);
+  color: var(--text-primary);
+}
+.tree__row:hover {
+  background: var(--accent-soft);
+}
+.tree__row--state {
+  font-size: var(--fs-14);
+}
+.tree__name {
+  font-weight: 600;
+}
+.tree__meta {
+  margin-left: auto;
+}
+.tree__row--leaf .tree__name {
+  font-weight: 500;
+}
+
+/* AND/OR logic display */
+.logic {
+  font-size: var(--fs-13);
+}
+.logic__kw {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+.logic__then {
+  margin: 0;
+  padding-left: 16px;
+}
+.logic__group {
+  display: grid;
+  gap: 4px;
+  padding: 8px 12px;
+  margin: 0 0 8px;
+  border-radius: var(--r-control);
+  border-left: 3px solid var(--vg-amber);
+  background: var(--bg-raised);
+}
+.logic__group--or {
+  border-left-color: var(--info-strong);
+  background: var(--info-soft);
+}
+.logic__group .logic__group {
+  margin: 4px 0;
+  background: var(--bg-card);
+}
+.logic__item {
+  display: grid;
+  gap: 4px;
+}
+.logic__cond {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--hairline);
+}
+.logic__op {
+  width: fit-content;
+  padding: 1px 8px;
+  border-radius: var(--r-tag);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--vg-black);
+  color: var(--vg-yellow);
+}
+.logic__op--or {
+  background: var(--info);
+  color: #fff;
+}
+
+/* Condition group editor */
+.gedit {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--r-card);
+  border: 1px solid var(--hairline);
+  border-left: 4px solid var(--vg-amber);
+  background: var(--bg-card);
+}
+.gedit--or {
+  border-left-color: var(--info-strong);
+}
+.gedit .gedit {
+  background: var(--bg-raised);
+}
+.gedit__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.gedit__head .icon-btn {
+  margin-left: auto;
+}
+.gedit__item {
+  display: grid;
+  gap: 6px;
+}
+.cond-row--rule {
+  grid-template-columns: 180px 240px minmax(0, 1fr) auto;
+  margin-bottom: 0;
+}
+.cond-row__note {
+  align-self: center;
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .cond-row--rule {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Simulator */
+.sim-results {
+  display: grid;
+  gap: 12px;
+}
+.simnode__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  font-size: var(--fs-13);
+}
+.simnode__icon {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--chart-neutral-2);
+  color: var(--text-primary);
+}
+.simnode__row--true .simnode__icon {
+  background: var(--positive-strong);
+  color: #fff;
+}
+.simnode__row--false .simnode__icon {
+  background: var(--negative-strong);
+  color: #fff;
+}
+.simnode__row--unknown .simnode__icon {
+  background: var(--warning-strong);
+  color: #fff;
+}
+.simnode__children {
+  margin-left: 10px;
+  padding-left: 14px;
+  border-left: 1px dashed var(--hairline-strong);
+}
+.sim-outcome {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--r-control);
+  background: var(--bg-raised);
+  font-weight: 600;
+  font-size: var(--fs-13);
+}
+.sim-outcome--met {
+  background: var(--accent-soft);
+}
+.sim-outcome--unknown {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+/* Multi-line values (rule logic) keep their line breaks in the Checker comparison. */
+.compare td {
+  white-space: pre-line;
+}

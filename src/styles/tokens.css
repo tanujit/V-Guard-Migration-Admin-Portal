@@ -1,0 +1,173 @@
+/*
+ * V-Guard Rishta design system — tokens
+ *
+ * Brand direction (V-Guard): Yellow = primary, Black = secondary, White = base.
+ * No official brand file exists in the repository yet, so the palette below is the proposed
+ * default from the refinement brief. Replace --vg-yellow-* with the official values when supplied;
+ * every component reads these tokens, never a literal hex.
+ *
+ * Rules
+ *  - Yellow is the dominant accent, used strategically: primary actions, active states, key figures.
+ *  - Black gives structure and weight (navigation, hero banner, dark cards).
+ *  - White / off-white keep content readable.
+ *  - Text never sits in yellow on white; on yellow surfaces text is black (≥ 11:1).
+ *  - Green / orange / red / teal carry meaning only (status, categories).
+ */
+:root {
+  /* ---------- Brand palette ---------- */
+  --vg-yellow: #ffd000;
+  --vg-yellow-deep: #f2b900;
+  --vg-amber: #e5a000;
+  --vg-yellow-light: #fff4c2;
+  --vg-yellow-wash: #fffaeb;
+  --vg-yellow-ink: #8a6500; /* yellow family readable as text on white (5.3:1) */
+  --vg-black: #111318;
+  --vg-charcoal: #242833;
+  --vg-graphite: #3a3f4c;
+  --vg-white: #ffffff;
+  --vg-offwhite: #f7f7f4;
+  --vg-grey-light: #e8e8e5;
+  --vg-grey-muted: #737780;
+
+  /* ---------- Semantic surfaces & text ---------- */
+  --bg-page: var(--vg-offwhite);
+  --bg-card: var(--vg-white);
+  --bg-raised: #f3f3ef;
+  --bg-sunken: #ececE7;
+  --bg-tint: var(--vg-yellow-wash);
+  --text-primary: var(--vg-black);
+  --text-secondary: #4a4e58;
+  --text-muted: #6b6f78;
+  --text-on-yellow: var(--vg-black);
+  --text-on-dark: #ffffff;
+  --text-on-dark-muted: #a7abb5;
+  --hairline: var(--vg-grey-light);
+  --hairline-strong: #d6d6d1;
+
+  /* Navigation */
+  --nav-bg: var(--vg-black);
+  --nav-raised: #1d2029;
+  --nav-hover: #1a1d25;
+  --nav-text: #ffffff;
+  --nav-text-secondary: #b8bcc6;
+  --nav-text-muted: #7d828e;
+  --nav-hairline: rgba(255, 255, 255, 0.07);
+
+  /* Accent (yellow) — fills only. Use --accent-ink for yellow-family text on light surfaces. */
+  --accent: var(--vg-yellow);
+  --accent-hover: var(--vg-yellow-deep);
+  --accent-ink: var(--vg-yellow-ink);
+  --accent-soft: rgba(255, 208, 0, 0.16);
+  --accent-on-dark: var(--vg-yellow);
+
+  /* ---------- Semantic status ---------- */
+  --positive: #127a49;
+  --positive-strong: #1e9e62;
+  --positive-soft: rgba(30, 158, 98, 0.12);
+  --negative: #c4262e;
+  --negative-strong: #e5484d;
+  --negative-soft: rgba(229, 72, 77, 0.12);
+  --warning: #a35a00;
+  --warning-strong: #f08c00;
+  --warning-soft: rgba(240, 140, 0, 0.14);
+  --info: #1f5fbf;
+  --info-strong: #3b82f6;
+  --info-soft: rgba(59, 130, 246, 0.12);
+  --teal: #0f8a83;
+  --teal-strong: #14a39a;
+  --neutral-soft: rgba(17, 19, 24, 0.06);
+
+  /* ---------- Gradients ---------- */
+  --grad-yellow: linear-gradient(135deg, #ffd000 0%, #ffc400 48%, #f2b900 100%);
+  --grad-amber: linear-gradient(135deg, #ffd000 0%, #f5b000 60%, #e5a000 100%);
+  --grad-dark: linear-gradient(145deg, #111318 0%, #1c1f27 45%, #2a2e3a 100%);
+  --grad-light: linear-gradient(160deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 250, 235, 0.78) 100%);
+  --grad-yellow-wash: linear-gradient(180deg, rgba(255, 244, 194, 0.55) 0%, rgba(255, 244, 194, 0) 100%);
+  --grad-nav-active: linear-gradient(90deg, rgba(255, 208, 0, 0.2) 0%, rgba(255, 208, 0, 0.04) 100%);
+  --grad-glow-yellow: radial-gradient(circle at 85% 0%, rgba(255, 208, 0, 0.28) 0%, rgba(255, 208, 0, 0) 60%);
+  --grad-sheen: linear-gradient(120deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 45%);
+
+  /* ---------- Glass ---------- */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-edge: rgba(17, 19, 24, 0.07);
+  --glass-blur: blur(14px) saturate(150%);
+
+  /* ---------- Charts ---------- */
+  --chart-grid: #ecece7;
+  --chart-axis: #6b6f78;
+  --chart-neutral-1: #9a9ea8;
+  --chart-neutral-2: #d5d6d2;
+  --chart-neutral-3: #e6e6e1;
+
+  /* ---------- Type ---------- */
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-16: 16px;
+  --fs-18: 18px;
+  --fs-22: 22px;
+  --fs-28: 28px;
+  --fs-32: 32px;
+
+  /* ---------- Spacing (4px grid) ---------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* ---------- Radius ---------- */
+  --r-tag: 6px;
+  --r-control: 10px;
+  --r-card: 14px;
+  --r-panel: 18px;
+
+  /* ---------- Depth ---------- */
+  --shadow-1: 0 1px 2px rgba(17, 19, 24, 0.05), 0 1px 1px rgba(17, 19, 24, 0.03);
+  --shadow-card: 0 1px 2px rgba(17, 19, 24, 0.04), 0 8px 24px -12px rgba(17, 19, 24, 0.12);
+  --shadow-lift: 0 2px 4px rgba(17, 19, 24, 0.05), 0 16px 32px -12px rgba(17, 19, 24, 0.2);
+  --shadow-yellow: 0 12px 32px -10px rgba(229, 160, 0, 0.55);
+  --shadow-dark: 0 14px 34px -12px rgba(17, 19, 24, 0.55);
+  --shadow-float: 0 12px 32px rgba(17, 19, 24, 0.14), 0 2px 6px rgba(17, 19, 24, 0.06);
+  --shadow-drawer: -16px 0 40px rgba(17, 19, 24, 0.16);
+
+  /* Focus: black ring + yellow halo reads on white, yellow and dark surfaces */
+  --focus-ring: 0 0 0 2px var(--vg-white), 0 0 0 4px var(--vg-black), 0 0 0 7px rgba(255, 208, 0, 0.55);
+
+  /* ---------- Motion ---------- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-menu: 200ms;
+  --dur-enter: 340ms;
+
+  /* ---------- Layout ---------- */
+  --sidebar-w: 296px;
+  --sidebar-w-collapsed: 72px;
+  --header-h: 64px;
+  --content-max: 1600px;
+
+  /* ---------- Layers ---------- */
+  --z-sticky: 20;
+  --z-header: 30;
+  --z-sidebar: 40;
+  --z-overlay: 60;
+  --z-drawer: 70;
+  --z-toast: 90;
+  --z-tooltip: 100;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-menu: 0ms;
+    --dur-enter: 0ms;
+  }
+}

@@ -1,0 +1,68 @@
+/* Phase 12 — Reports & analytics. Yellow carries the lead series and the active state; status colour
+   is reserved for meaning (warning = unconfirmed / stale, negative = refused / failed). */
+
+/* The group row takes the hero overlap the shared subnav normally has; the subnav then sits below it. */
+.ana-groups { position: relative; z-index: 3; display: flex; flex-wrap: wrap; gap: 8px; margin: -44px 12px 0; padding: 6px; border-radius: var(--r-panel); background: var(--glass-bg-strong); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+.ana-groups + .subnav { margin-top: 8px; }
+.ana-groups__btn { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--hairline); background: var(--bg-card); color: var(--text-secondary); font-size: var(--fs-13, 13px); font-weight: 600; text-decoration: none; }
+.ana-groups__btn:hover { color: var(--text-primary); border-color: rgba(229, 160, 0, 0.5); }
+.ana-groups__btn.is-active { background: var(--vg-black, #111318); border-color: var(--vg-black, #111318); color: #fff; }
+.ana-groups__btn:focus-visible { outline: 2px solid var(--vg-amber, #e5a000); outline-offset: 2px; }
+
+.ana-filterbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; padding: 12px 14px; margin-bottom: 14px; border: 1px solid var(--hairline); border-radius: 12px; background: var(--bg-card); }
+.ana-filter { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); min-width: 132px; }
+.ana-filter select, .ana-filter input { height: 34px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--hairline); background: var(--bg-card); color: var(--text-primary); font-size: 13px; }
+.ana-filter.is-off { opacity: 0.5; }
+.ana-filter--chips { border: 0; padding: 0; margin: 0; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+.ana-filter--chips legend { width: 100%; margin-bottom: 4px; font-size: 12px; }
+.ana-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--hairline); font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; background: var(--bg-card); }
+.ana-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.ana-chip.is-on { background: var(--vg-yellow-wash); border-color: rgba(229, 160, 0, 0.55); color: var(--text-primary); }
+.ana-chip.is-blocked { opacity: 0.55; }
+.ana-chip:focus-within { outline: 2px solid var(--vg-amber, #e5a000); outline-offset: 1px; }
+.ana-filterbar__period { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; font-size: 12px; }
+.ana-recipients { display: flex; flex-wrap: wrap; gap: 6px; border: 0; padding: 0; margin: 8px 0 12px; }
+.ana-recipients legend { width: 100%; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+
+.ana-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.ana-tiles--compact { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+.ana-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--hairline); background: var(--bg-card); text-align: left; font: inherit; color: inherit; }
+.ana-tile--btn { cursor: pointer; }
+.ana-tile--btn:hover { border-color: rgba(229, 160, 0, 0.55); }
+.ana-tile--btn:focus-visible { outline: 2px solid var(--vg-amber, #e5a000); outline-offset: 2px; }
+.ana-tile--warn { border-color: rgba(229, 160, 0, 0.45); }
+.ana-tile__label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.ana-tile__value { font-size: 24px; font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.ana-tile__value.is-na { font-size: 15px; color: var(--text-muted); }
+.ana-tile__period { font-size: 12px; color: var(--text-muted); }
+.ana-tile__detail { font-size: 12px; color: var(--text-secondary); }
+.ana-prov { display: inline-flex; padding: 0 6px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--text-secondary); border: 1px dashed rgba(229, 160, 0, 0.6); white-space: nowrap; }
+.ana-fresh { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ana-export { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.ana-heat { display: inline-block; min-width: 28px; padding: 1px 6px; border-radius: 6px; text-align: right; font-variant-numeric: tabular-nums; }
+.ana-heat--0 { background: transparent; color: var(--text-muted); }
+.ana-heat--1 { background: rgba(245, 184, 0, 0.14); }
+.ana-heat--2 { background: rgba(245, 184, 0, 0.3); }
+.ana-heat--3 { background: rgba(229, 160, 0, 0.48); }
+.ana-heat--4 { background: rgba(229, 160, 0, 0.7); color: var(--vg-black, #111318); font-weight: 600; }
+
+.ana-geo { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.ana-geo__tile { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--hairline); text-align: left; font: inherit; color: var(--text-primary); cursor: pointer; background: color-mix(in srgb, #f5b800 calc(var(--heat, 0) * 70%), var(--bg-card)); }
+.ana-geo__tile:disabled { cursor: default; }
+.ana-geo__tile:hover:not(:disabled) { border-color: var(--vg-black, #111318); }
+.ana-geo__tile:focus-visible { outline: 2px solid var(--vg-black, #111318); outline-offset: 2px; }
+.ana-geo__name { font-size: 12px; font-weight: 600; }
+.ana-geo__value { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ana-geo__sub { font-size: 11px; color: var(--text-secondary); }
+
+.ana-addr { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid var(--hairline); }
+.ana-addr:last-child { border-bottom: 0; }
+.ana-parent td { background: var(--vg-offwhite, #f6f5f2); }
+.ana-total { padding: 10px 14px; }
+.ana-check { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; align-self: end; }
+
+@media (max-width: 640px) {
+  .ana-filter { min-width: calc(50% - 8px); }
+  .ana-tile__value { font-size: 20px; }
+}

@@ -1,0 +1,151 @@
+/* =====================================================================
+   Member management, registration and KYC (Phase 5)
+   ===================================================================== */
+
+.restr {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--r-tag);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.restr::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.restr--block {
+  background: var(--negative-soft);
+  color: var(--negative);
+}
+.restr--block::before {
+  background: var(--negative-strong);
+}
+.restr--hold {
+  background: var(--vg-black);
+  color: var(--vg-yellow);
+}
+.restr--hold::before {
+  background: var(--vg-yellow);
+  border-radius: 50%;
+}
+
+.locked-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: var(--r-tag);
+  background: var(--positive-soft);
+  color: var(--positive);
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+.ev-cat {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--r-tag);
+  background: var(--neutral-soft);
+  font-size: 11px;
+  font-weight: 600;
+}
+.ev-cat--restriction,
+.ev-cat--security {
+  background: var(--negative-soft);
+  color: var(--negative);
+}
+.ev-cat--kyc,
+.ev-cat--registration {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.ev-cat--mpin {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.m360-id {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.m360-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--grad-yellow);
+  color: var(--vg-black);
+  font-size: var(--fs-18);
+  font-weight: 700;
+  box-shadow: var(--shadow-yellow);
+}
+.m360-actions {
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+}
+.m360 .req-head__type .icon-btn {
+  vertical-align: middle;
+}
+
+.impact-callout {
+  padding: 12px 14px;
+  border-radius: var(--r-card);
+  border-left: 4px solid var(--negative-strong);
+  background: var(--negative-soft);
+}
+.impact-callout--hold {
+  border-left-color: var(--vg-black);
+  background: var(--bg-tint);
+}
+.impact-callout ul {
+  margin: 6px 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.geo-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-13);
+}
+.ref-list--plain {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+.mpin-hit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-card);
+}
+.evidence-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 140px;
+  padding: 16px;
+  border: 2px dashed var(--hairline-strong);
+  border-radius: var(--r-card);
+  background: repeating-linear-gradient(135deg, var(--bg-raised), var(--bg-raised) 12px, var(--bg-card) 12px, var(--bg-card) 24px);
+  color: var(--text-secondary);
+  font-size: var(--fs-13);
+  text-align: center;
+}
