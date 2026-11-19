@@ -6,6 +6,9 @@ import { SessionProvider } from "@/context/SessionContext";
 import { FilterProvider } from "@/context/FilterContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { DrillProvider } from "@/context/DrillContext";
+import { SpeedInsightsRoute } from "@/components/SpeedInsightsRoute";
+import { ViewAsBanner } from "@/components/ViewAsBanner";
+import { SimulationBanner } from "@/components/SimulationBanner";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
 import "@/styles/components.css";
@@ -21,6 +24,9 @@ import "@/styles/gifts.css";
 import "@/styles/risk.css";
 import "@/styles/ops.css";
 import "@/styles/analytics.css";
+import "@/styles/platform.css";
+import "@/styles/jobs.css";
+import "@/styles/demo.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -29,11 +35,14 @@ createRoot(document.getElementById("root")!).render(
         <FilterProvider>
           <ToastProvider>
             <DrillProvider>
+              <SimulationBanner />
+              <ViewAsBanner />
               <App />
             </DrillProvider>
           </ToastProvider>
         </FilterProvider>
       </SessionProvider>
+      <SpeedInsightsRoute />
     </BrowserRouter>
   </StrictMode>,
 );

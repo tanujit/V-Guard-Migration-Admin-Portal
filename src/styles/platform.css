@@ -1,0 +1,69 @@
+/* Platform administration (Phase 13): View-As banner and member preview, theme preview, route errors. */
+
+/* ---- Read-only View-As banner: stays above everything while a session is open ---- */
+.viewas-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 16px;
+  background: var(--vg-black);
+  color: var(--vg-white);
+  border-bottom: 3px solid var(--vg-yellow);
+  font-size: var(--fs-13, 13px);
+}
+.viewas-banner strong { color: var(--vg-yellow); letter-spacing: 0.02em; }
+.viewas-banner__link { color: var(--vg-white); text-decoration: underline; text-underline-offset: 3px; }
+.viewas-banner__link:hover, .viewas-banner__link:focus-visible { color: var(--vg-yellow); }
+.viewas-banner__exit {
+  margin-left: auto;
+  min-height: 32px;
+  padding: 4px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--vg-yellow);
+  color: var(--vg-black);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.viewas-banner__exit:hover { background: var(--vg-yellow-deep); }
+.viewas-banner__exit:focus-visible, .viewas-banner__link:focus-visible { outline: 2px solid var(--vg-yellow); outline-offset: 2px; }
+
+/* ---- Read-only member app preview ---- */
+.viewas-app { display: grid; gap: 12px; padding: 12px; border: 2px dashed var(--vg-amber); border-radius: var(--r-panel, 16px); background: var(--bg-tint); }
+.viewas-app__screen { display: grid; gap: 12px; }
+.viewas-app__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid var(--hairline); }
+.viewas-disabled[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+/* ---- App theme preview: a small phone-like card rendered with the theme's own colours ---- */
+.theme-preview {
+  display: grid;
+  gap: 12px;
+  max-width: 280px;
+  margin: 0 0 16px;
+  padding: 0 0 16px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--tb);
+  color: var(--tt);
+}
+.theme-preview__bar { padding: 12px 16px; background: var(--ts); color: var(--tb); font-weight: 600; }
+.theme-preview__card { display: grid; gap: 4px; margin: 0 16px; padding: 12px; border-radius: 12px; background: var(--tp); color: var(--ts); }
+.theme-preview__card strong { font-size: 24px; font-variant-numeric: tabular-nums; }
+.theme-preview__chip { justify-self: start; padding: 2px 8px; border-radius: 999px; background: var(--tb); color: var(--tt); font-size: 11px; }
+.theme-preview__btn { margin: 0 16px; padding: 10px; border-radius: 10px; background: var(--ta); color: var(--ts); text-align: center; font-weight: 600; }
+
+/* ---- Tiles, decisions ---- */
+.ana-tile--accent { border-color: var(--vg-amber); box-shadow: inset 0 0 0 1px var(--vg-amber); }
+.decision-list { display: grid; gap: 12px; }
+.decision-anchor { scroll-margin-top: 96px; }
+.decision-anchor:target .panel { box-shadow: 0 0 0 2px var(--vg-amber); }
+
+/* ---- Route error boundary ---- */
+.route-error { max-width: 640px; margin: 48px auto; display: grid; gap: 8px; }
+.route-error h2 { margin: 0; }

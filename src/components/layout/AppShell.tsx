@@ -6,6 +6,7 @@ import { ConfirmDialog } from "@/components/ui/Overlay";
 import { SectionSkeleton } from "@/components/ui/primitives";
 import { useSession } from "@/context/SessionContext";
 import { storageGet, storageSet } from "@/lib/csv";
+import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
 
 const COLLAPSE_KEY = "vg-rishta.sidebar-collapsed";
 
@@ -48,9 +49,11 @@ export function AppShell() {
       <div className="shell__main">
         <Header onOpenMobileNav={() => setMobileOpen(true)} onRequestSignOut={() => setConfirmSignOut(true)} />
         <main id="main" className="shell__content" ref={mainRef} tabIndex={-1}>
-          <Suspense fallback={<PageLoading />}>
-            <Outlet />
-          </Suspense>
+          <RouteErrorBoundary resetKey={location.pathname}>
+            <Suspense fallback={<PageLoading />}>
+              <Outlet />
+            </Suspense>
+          </RouteErrorBoundary>
         </main>
       </div>
       <ConfirmDialog

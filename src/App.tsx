@@ -232,6 +232,58 @@ const fraudGov = () => import("@/pages/fraud/GovernancePages");
 const RiskConfigHistoryPage = lazyNamed(fraudGov, "ConfigHistoryPage");
 const ComplianceAuditPage = lazyNamed(fraudGov, "ComplianceAuditPage");
 const OpsLayout = lazyNamed(() => import("@/pages/ops/shared"), "OpsLayout");
+const DemoCentrePage = lazyNamed(() => import("@/pages/demo/DemoCentrePage"), "DemoCentrePage");
+const jobsShared = () => import("@/pages/jobs/shared");
+const JobsLayout = lazyNamed(jobsShared, "JobsLayout");
+const jobPages = () => import("@/pages/jobs/JobPages");
+const ScopeOverviewPage = lazyNamed(jobPages, "ScopeOverviewPage");
+const JobDashboardPage = lazyNamed(jobPages, "JobDashboardPage");
+const JobListPage = lazyNamed(jobPages, "JobListPage");
+const JobDetailPage = lazyNamed(jobPages, "JobDetailPage");
+const IncomingJobsPage = lazyNamed(jobPages, "IncomingJobsPage");
+const AllocationPage = lazyNamed(jobPages, "AllocationPage");
+const ExecutionPage = lazyNamed(jobPages, "ExecutionPage");
+const EvidencePage = lazyNamed(jobPages, "EvidencePage");
+const SiebelVerificationPage = lazyNamed(jobPages, "SiebelVerificationPage");
+const RewardMonitoringPage = lazyNamed(jobPages, "RewardMonitoringPage");
+const technicianPages = () => import("@/pages/jobs/TechnicianPages");
+const TechnicianDirectoryPage = lazyNamed(technicianPages, "TechnicianDirectoryPage");
+const VerificationPage = lazyNamed(technicianPages, "VerificationPage");
+const TechnicianPerformancePage = lazyNamed(technicianPages, "TechnicianPerformancePage");
+const EidCardPage = lazyNamed(technicianPages, "EidCardPage");
+const HappyPointsPage = lazyNamed(technicianPages, "HappyPointsPage");
+const CustomerFeedbackPage = lazyNamed(technicianPages, "CustomerFeedbackPage");
+const fieldPages = () => import("@/pages/jobs/FieldPages");
+const DirectOrderPage = lazyNamed(fieldPages, "DirectOrderPage");
+const QuotationsPage = lazyNamed(fieldPages, "QuotationsPage");
+const RetailerTaggingPage = lazyNamed(fieldPages, "RetailerTaggingPage");
+const VisitSurveysPage = lazyNamed(fieldPages, "VisitSurveysPage");
+const WorkLocationPage = lazyNamed(fieldPages, "WorkLocationPage");
+const SalesExecutivePage = lazyNamed(fieldPages, "SalesExecutivePage");
+const DecisionsPage = lazyNamed(fieldPages, "DecisionsPage");
+const platformShared = () => import("@/pages/platform/shared");
+const PlatformLayout = lazyNamed(platformShared, "PlatformLayout");
+const platformAdmin = () => import("@/pages/platform/AdminPages");
+const PlatformOverviewPage = lazyNamed(platformAdmin, "PlatformOverviewPage");
+const AdminAccessPage = lazyNamed(platformAdmin, "AdminAccessPage");
+const RoleGovernancePage = lazyNamed(platformAdmin, "RoleGovernancePage");
+const platformExperience = () => import("@/pages/platform/ExperiencePages");
+const ViewAsPage = lazyNamed(platformExperience, "ViewAsPage");
+const ViewAsSessionPage = lazyNamed(platformExperience, "ViewAsSessionPage");
+const AppUsagePage = lazyNamed(platformExperience, "AppUsagePage");
+const AppThemesPage = lazyNamed(platformExperience, "AppThemesPage");
+const platformGovernance = () => import("@/pages/platform/GovernancePages");
+const ConfigurationRegistryPage = lazyNamed(platformGovernance, "ConfigurationRegistryPage");
+const AuditConsolePage = lazyNamed(platformGovernance, "AuditConsolePage");
+const SowCoveragePage = lazyNamed(platformGovernance, "SowCoveragePage");
+const OpenPointsPage = lazyNamed(platformGovernance, "OpenPointsPage");
+const platformReadiness = () => import("@/pages/platform/ReadinessPages");
+const PerformancePage = lazyNamed(platformReadiness, "PerformancePage");
+const TestingPage = lazyNamed(platformReadiness, "TestingPage");
+const MigrationPage = lazyNamed(platformReadiness, "MigrationPage");
+const GoLivePage = lazyNamed(platformReadiness, "GoLivePage");
+const ReleasePage = lazyNamed(platformReadiness, "ReleasePage");
+
 const OpsOverviewPage = lazyNamed(() => import("@/pages/ops/OverviewPage"), "OpsOverviewPage");
 const opsDir = () => import("@/pages/ops/DirectoryPages");
 const OpsDirectoryPage = lazyNamed(opsDir, "DirectoryPage");
@@ -425,6 +477,50 @@ export default function App() {
           <Route path="config-history" element={<RiskConfigHistoryPage />} />
           <Route path="compliance" element={<ComplianceAuditPage />} />
           <Route path="audit" element={<Navigate to="/governance/fraud/compliance?tab=audit" replace />} />
+        </Route>
+        <Route path="/governance/demo-centre" element={<DemoCentrePage />} />
+        <Route path="/future/job-management" element={<JobsLayout />}>
+          <Route index element={<ScopeOverviewPage />} />
+          <Route path="dashboard" element={<JobDashboardPage />} />
+          <Route path="jobs" element={<JobListPage />} />
+          <Route path="jobs/:jobId" element={<JobDetailPage />} />
+          <Route path="incoming" element={<IncomingJobsPage />} />
+          <Route path="allocation" element={<AllocationPage />} />
+          <Route path="execution" element={<ExecutionPage />} />
+          <Route path="evidence" element={<EvidencePage />} />
+          <Route path="siebel" element={<SiebelVerificationPage />} />
+          <Route path="rewards" element={<RewardMonitoringPage />} />
+          <Route path="technicians" element={<TechnicianDirectoryPage />} />
+          <Route path="verification" element={<VerificationPage />} />
+          <Route path="performance" element={<TechnicianPerformancePage />} />
+          <Route path="eid" element={<EidCardPage />} />
+          <Route path="happy-points" element={<HappyPointsPage />} />
+          <Route path="feedback" element={<CustomerFeedbackPage />} />
+          <Route path="direct-order" element={<DirectOrderPage />} />
+          <Route path="quotations" element={<QuotationsPage />} />
+          <Route path="retailer-tagging" element={<RetailerTaggingPage />} />
+          <Route path="visit-surveys" element={<VisitSurveysPage />} />
+          <Route path="work-location" element={<WorkLocationPage />} />
+          <Route path="sales-executive" element={<SalesExecutivePage />} />
+          <Route path="decisions" element={<DecisionsPage />} />
+        </Route>
+        <Route path="/governance/platform" element={<PlatformLayout />}>
+          <Route index element={<Require permission="platform-admin:view"><PlatformOverviewPage /></Require>} />
+          <Route path="access" element={<Require permission="platform-admin:view"><AdminAccessPage /></Require>} />
+          <Route path="roles" element={<Require permission="platform-admin:view"><RoleGovernancePage /></Require>} />
+          <Route path="configuration" element={<Require permission="platform-admin:view"><ConfigurationRegistryPage /></Require>} />
+          <Route path="audit" element={<Require permission="platform-admin:view"><AuditConsolePage /></Require>} />
+          <Route path="view-as" element={<ViewAsPage />} />
+          <Route path="view-as/session" element={<ViewAsSessionPage />} />
+          <Route path="app-usage" element={<Require permission="app-usage:view"><AppUsagePage /></Require>} />
+          <Route path="themes" element={<Require permission="app-themes:view"><AppThemesPage /></Require>} />
+          <Route path="coverage" element={<Require permission="platform-admin:view"><SowCoveragePage /></Require>} />
+          <Route path="open-points" element={<Require permission="platform-admin:view"><OpenPointsPage /></Require>} />
+          <Route path="performance" element={<Require permission="release-readiness:view"><PerformancePage /></Require>} />
+          <Route path="testing" element={<Require permission="release-readiness:view"><TestingPage /></Require>} />
+          <Route path="migration" element={<Require permission="release-readiness:view"><MigrationPage /></Require>} />
+          <Route path="go-live" element={<Require permission="release-readiness:view"><GoLivePage /></Require>} />
+          <Route path="release" element={<Require permission="release-readiness:view"><ReleasePage /></Require>} />
         </Route>
         <Route path="/monitoring/integrations" element={<OpsLayout />}>
           <Route index element={<OpsOverviewPage />} />

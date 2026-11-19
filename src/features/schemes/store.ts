@@ -498,6 +498,29 @@ export function postMockTransaction(uid: string, t: TxnInput): Res & { trace?: {
   return { ...OK(txn.id, [...(out.summary.duplicates ? ["Duplicate detected by idempotency key: nothing credited twice"] : []), ...out.summary.stopped.map((x) => `${x} reached its budget cap and was auto-stopped (mock engine)`)]), trace: ev.trace };
 }
 
+/**
+ * Scan-service feed (simulation): the same evaluation as postMockTransaction, called by the simulated
+ * scan pipeline rather than an admin operator. Active schemes accrue on qualifying scans; accruals are
+ * idempotent per scan reference.
+ */
+export function ingestScanTransaction(t: { id: string; memberId: string; skuId: string; date: string }): Res & { posted?: number; points?: number } {
+  const m = mem().members.find((x) => x.id === t.memberId);
+  if (!m) return NO("Unknown member");
+  if (!ms().skus.some((k) => k.id === t.skuId)) return NO("Unknown SKU");
+  let s = state;
+  let txn = s.txns.find((x) => x.id === t.id);
+  if (!txn) {
+    txn = { id: t.id, kind: "scan", memberId: m.id, programme: m.programme, branchCode: m.branchCode, skuId: t.skuId, qty: 1, date: t.date, originalTxnId: null };
+    s = { ...s, txns: [...s.txns, txn] };
+  }
+  const ev = evaluateTxn(s, engineCtx("live_mock"), txn);
+  const out = postCandidates(s, engineCtx("live_mock"), ev.candidates);
+  s = postReversals(out.state, ev.reversals);
+  s = audit(s, "SYSTEM", { entity: "ledger", entityId: txn.id, schemeVersion: null, field: "Simulated scan", oldValue: null, newValue: `${out.summary.posted} accrual(s), ${out.summary.points} points`, reason: "Scan service feed (Client Demo simulation)", approvalRequestId: null, changeType: "transaction" } as never);
+  commit(s);
+  return { ...OK(txn.id), posted: out.summary.posted, points: out.summary.points };
+}
+
 export function runPeriodNow(uid: string, schemeId: string): Res {
   if (!hasPermission(acc(), uid, "schemes", "activate").allowed) return NO("You need Scheme builder: Activate (engine operator)");
   const sc = schemeById(state, schemeId);

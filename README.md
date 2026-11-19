@@ -6,12 +6,18 @@
 - **Phase 4:** master data (products, SKUs, categories, branch hierarchy with mock SFDC sync) and scanning configuration (Scan-In/Out points, restriction rule builder, simulator).
 - **Phase 5:** Member Management, Member 360, programme-specific Registration and document-wise KYC.
 - **Phase 6:** Scheme & Incentive Management: the 21-component Scheme Builder, versioning, budget and exposure, two-level settlement, tiers, referrals, campaigns and contests, gamification and bonuses.
+- **Phases 7–12:** wallet, TDS and redemption; communication centre; gifts and insurance; fraud and risk; integration monitoring; reports and analytics.
+- **Phase 13:** platform administration, read-only View-As, app usage analytics, app themes, configuration registry, central audit, SOW coverage, and UAT / migration / go-live readiness. See the [developer handover](docs/HANDOVER.md).
+- **Phase 14A:** interactive client demonstration: simulation banner, role switcher (10 personas), Client Demo Centre with guided scenarios, scan and redemption simulators, integration outcome controls, event timeline and demo reset. See the [client demo guide](docs/CLIENT-DEMO-GUIDE.md).
+- **Phase 14 (proposed scope):** a Super Admin-only, demo-mode prototype and scope assessment for SOW Module 12 (Job Management & Field Tooling). Not approved, not live.
 
 > All figures, users, requests and decisions in this build are **development / demo data** held in
 > the browser. Nothing is connected to V-Guard or Evolve systems, no email is sent, and no approval
 > changes any real record.
 
 ## Run it
+
+The build is a **simulation build** by default (`VITE_APP_ENV` unset): a persistent banner marks every page and the Client Demo Centre is available. Set `VITE_APP_ENV=production` at build time to hide every simulation control.
 
 ```bash
 npm install
@@ -43,6 +49,9 @@ Useful URLs while testing:
 | `/governance/fraud` | Fraud & risk: review queue, risk cases, rules, anomaly detection, devices, duplicate identity, QR integrity, geo and branch, redemption risk, scan rate, data integrity, SFDC reconciliation, history, decisions, compliance & audit (Phase 10) |
 | `/reports` | Reports & analytics: business overview and 13 dashboards, Member 360 analytics, Scan & QR, finance (points ageing, TDS monthly liability), programme and DD reports, report catalogue, scheduled reports, threshold alerts, KPI dictionary, history, lineage and reconciliation (Phase 12) |
 | `/monitoring/integrations` | Integration monitoring: overview, directory, connection health, SFDC, eSeal, other connections, message trace, data sync, jobs & queues, failures, retry, reconciliation, system health, API performance, crashes, infrastructure, authentication, member diagnostics, adoption, float & kitty, alerts & incidents, audit & decisions (Phase 11) |
+| `/governance/platform` | Platform administration: overview, admin access & SSO, roles & permissions, configuration registry, audit & error catalogue, View-As, app usage analytics, app themes, SOW coverage, open points & scope, performance & capacity, testing & UAT, data migration, go-live checklist, release & rollback (Phase 13) |
+| `/governance/demo-centre` | Client Demo Centre (simulation builds only): personas, guided scenarios, member-app scan and redemption simulator, integration outcomes, event timeline, demo reset (Phase 14A) |
+| `/future/job-management` | PROPOSED Module 12 prototype — job lifecycle with a mock Siebel adapter, allocation workbench, simulated rewards, verification flag, Happy Points and E-ID previews, field tooling and the scope decision register (Phase 14, Super Admin only) |
 | `/gifts` | Gift & fulfilment: catalogue, point costs, categories, partners and SKU mapping, vouchers and recovery, physical orders, delivery tracking, backend gifts, insurance cards, imports, reports, audit, decisions (Phase 9) |
 | `/masters` | Master data overview, decision register, master audit log (Phase 4) |
 | `/masters/scanning` | Scanning configuration: points, rules, simulator (Phase 4) |
@@ -61,6 +70,10 @@ Tests:
 - `npm run test:gifts` runs the 85 Phase 9 gift, voucher, fulfilment and insurance cases (see `docs/PHASE-9-REPORT.md`).
 - `npm run test:ops` runs the 114 Phase 11 integration, monitoring, system health and technical operations cases (see `docs/PHASE-11-REPORT.md`).
 - `npm run test:analytics` runs the 155 Phase 12 analytics, reporting, KPI governance, finance report and export cases (see `docs/PHASE-12-REPORT.md`).
+- `npm run test:platform` runs the 126 Phase 13 platform, View-As, usage, theme, governance and readiness cases (see `docs/PHASE-13-REPORT.md`).
+- `npm run test:jobs` runs the 67 Phase 14 Module 12 prototype cases (see `docs/PHASE-14-REPORT.md`).
+- `npm run test:demo` runs the 38 Phase 14A cross-module simulation acceptance cases (see `docs/PHASE-14A-REPORT.md`).
+- `npm run report:tests` runs every suite and records the results shown on Platform administration → Testing & UAT.
 
 Pages are lazy-loaded per route, so each module's code downloads the first time it opens. The
 approval seed replays the module-raised demo requests from
@@ -115,4 +128,5 @@ Screens consume these contracts, so they do not change. No endpoints are defined
 been agreed.
 
 Reports: [Phase 1](docs/PHASE-1-REPORT.md) · [Phase 3](docs/PHASE-3-REPORT.md) · [Phase 4](docs/PHASE-4-REPORT.md) · [Phase 5](docs/PHASE-5-REPORT.md) · [Phase 6](docs/PHASE-6-REPORT.md) ·
-[Design system](docs/DESIGN-SYSTEM.md).
+[Phase 7](docs/PHASE-7-REPORT.md) · [Phase 8](docs/PHASE-8-REPORT.md) · [Phase 9](docs/PHASE-9-REPORT.md) · [Phase 10](docs/PHASE-10-REPORT.md) · [Phase 11](docs/PHASE-11-REPORT.md) ·
+[Phase 12](docs/PHASE-12-REPORT.md) · [Phase 13](docs/PHASE-13-REPORT.md) · [Phase 14](docs/PHASE-14-REPORT.md) · [Phase 14A](docs/PHASE-14A-REPORT.md) · [Client demo guide](docs/CLIENT-DEMO-GUIDE.md) · [Developer handover](docs/HANDOVER.md) · [Design system](docs/DESIGN-SYSTEM.md).

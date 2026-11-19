@@ -13,7 +13,7 @@ import { addHours, isWorkflowAdmin, opCreate, opDecide, opExecFinish, opExecStar
 import { autoExecutes, getAdapter } from "./execution";
 import { buildApprovalSeed } from "./scenarios";
 
-const STORAGE_KEY = "vg-rishta.approval-store.v11";
+const STORAGE_KEY = "vg-rishta.approval-store.v12";
 const CLOCK_KEY = "vg-rishta.approval-clock.v1";
 const DEMO_NOW = `${DEMO_AS_OF}T${DEMO_AS_OF_TIME}`;
 

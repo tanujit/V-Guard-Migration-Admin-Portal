@@ -35,7 +35,7 @@ import {
   type PolicyResult,
 } from "./engine";
 
-const STORAGE_KEY = "vg-rishta.access-store.v14";
+const STORAGE_KEY = "vg-rishta.access-store.v17";
 
 function seed(): AccessState {
   return {

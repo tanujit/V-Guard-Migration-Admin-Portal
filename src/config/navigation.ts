@@ -1,5 +1,10 @@
 import type { LucideIcon } from "lucide-react";
+import { IS_SIMULATION } from "@/config/environment";
 import {
+  Presentation as DemoIcon,
+  Wrench as JobsIcon,
+  Settings2 as PlatformIcon,
+  MousePointerClick,
   Activity,
   BadgeCheck,
   Boxes,
@@ -47,6 +52,8 @@ export interface NavItem {
   /** Things the module is expected to hold, used by placeholder and drill-down views. */
   scope?: string[];
   action?: "logout";
+  /** Proposed scope (not in the agreed baseline): shown with a Proposed tag and its own treatment. */
+  proposed?: boolean;
   /** Highlight only on an exact path match (for section landing pages). */
   exact?: boolean;
 }
@@ -72,11 +79,11 @@ export const NAVIGATION: NavGroup[] = [
       { id: "members", label: "Member management", path: "/members", icon: Users, permission: "members:view", status: "live", summary: "Search, view and govern member records across programmes", scope: ["Member search and profile", "Status changes through Maker-Checker", "Programme and geography scoped lists"] },
       { id: "registration-kyc", label: "Registration & KYC", path: "/registration-kyc", icon: BadgeCheck, permission: "registration-kyc:view", status: "live", summary: "Registration queues, verification outcomes and KYC case handling", scope: ["Registration queues by status", "Verification outcomes", "KYC case ageing"] },
       { id: "wallet", label: "Wallet & points", path: "/wallet", icon: Wallet, permission: "wallet:view", status: "live", summary: "Unified wallet, points ledger, adjustments, reversals, transfers, settlement, TDS, GST gate, reports and reconciliation", scope: ["Member points ledger", "Adjustments through approval", "TDS Kitty ledger kept separate"] },
-      { id: "scanning", label: "Scanning management", path: "/scanning", icon: QrCode, permission: "scanning:view", status: "planned", summary: "QR scan records, failures and scan points", scope: ["Scan records with filters", "Failure reasons", "Scan points issued"] },
+      { id: "scanning", label: "Scanning management", path: "/reports/scans", icon: QrCode, permission: "scan-reports:view", status: "live", summary: "Scan-In / Scan-Out records, QR and parent-child reports (opens Scan & QR reports)", scope: ["Scan records with filters", "Failure reasons", "Scan points issued"] },
       { id: "redemption", label: "Redemption & fulfilment", path: "/redemption", icon: Gift, permission: "redemption:view", status: "live", summary: "Redemption requests, payouts, vouchers, products, backend gifts, cancellation, limits and EMI", scope: ["Redemption requests", "Payout status", "Gift orders and delivery"] },
       { id: "gift-fulfilment", label: "Gift & fulfilment", path: "/gifts", icon: PackageCheck, permission: "gift-orders:view", status: "live", summary: "Gift catalogue, segment point costs, partners, vouchers, physical orders, delivery tracking, backend gifts and insurance cards", scope: ["Catalogue and point costs", "Vouchers and recovery", "Orders and delivery tracking", "Insurance cards"] },
-      { id: "tickets", label: "Tickets & support", path: "/tickets", icon: LifeBuoy, permission: "tickets:view", status: "planned", summary: "Member support tickets, escalations and SLA", scope: ["Ticket queues", "Escalations", "SLA tracking"] },
-      { id: "geo", label: "Geo & location", path: "/geo", icon: Map, permission: "geo:view", status: "planned", summary: "Geography hierarchy visibility (SFDC-owned masters are read only)", scope: ["State, district and branch views", "Location anomalies"] },
+      { id: "tickets", label: "Tickets & support", path: "/masters/communication/helpdesk", icon: LifeBuoy, permission: "communication:view", status: "live", summary: "Helpdesk queries, bot escalations, agents and SLA (opens the Communication Centre helpdesk)", scope: ["Ticket queues", "Escalations", "SLA tracking"] },
+      { id: "geo", label: "Geo & location", path: "/masters/branches", icon: Map, permission: "branches:view", status: "live", summary: "Branch hierarchy, districts and pincodes from SFDC (opens Branch & hierarchy)", scope: ["State, district and branch views", "Location anomalies"] },
     ],
   },
   {
@@ -89,9 +96,9 @@ export const NAVIGATION: NavGroup[] = [
       { id: "branches", label: "Branch & hierarchy", path: "/masters/branches", icon: Building2, permission: "branches:view", status: "live", summary: "State, district and branch hierarchy with SFDC synchronisation status" },
       { id: "scanning-config", label: "Scanning configuration", path: "/masters/scanning", icon: ScanLine, permission: "scan-config:view", status: "live", summary: "Scan-In/Scan-Out points, scan restriction rules and exception settings" },
       { id: "schemes", label: "Schemes & incentives", path: "/schemes", icon: Workflow, permission: "schemes:view", status: "live", summary: "Scheme Builder, settlement, tiers, referrals, campaigns and gamification" },
-      { id: "financial", label: "Financial configuration", path: "/masters/financial", icon: Landmark, permission: "financial:view", status: "planned", summary: "Point values, TDS rules and payout settings per programme" },
+      { id: "financial", label: "Financial configuration", path: "/wallet/config", icon: Landmark, permission: "wallet:view", status: "live", summary: "Wallet, TDS and redemption configuration (opens Wallet configuration)" },
       { id: "communication", label: "Communication centre", path: "/masters/communication", icon: Megaphone, permission: "communication:view", status: "live", summary: "In-app notifications, SMS and templates" },
-      { id: "content", label: "Content & testimonials", path: "/masters/content", icon: MessageSquareQuote, permission: "content:view", status: "planned", summary: "App content, banners and testimonials" },
+      { id: "content", label: "Content & testimonials", path: "/masters/communication/content", icon: MessageSquareQuote, permission: "communication:view", status: "live", summary: "Self-service content, FAQs and guides (opens Communication Centre content)" },
     ],
   },
   {
@@ -100,9 +107,11 @@ export const NAVIGATION: NavGroup[] = [
     items: [
       { id: "users", label: "User & role management", path: "/governance/users", icon: UserCog, permission: "users:view", status: "live", summary: "Portal users, roles, permissions and access scopes" },
       { id: "approvals", label: "Approval centre", path: "/governance/approvals", icon: ClipboardCheck, permission: "approvals:view", status: "live", summary: "Maker-Checker queues with change comparison and history" },
-      { id: "audit", label: "Audit trail", path: "/governance/audit", icon: History, permission: "audit:view", status: "planned", summary: "Immutable record of every action in the portal" },
+      { id: "audit", label: "Audit trail", path: "/governance/platform/audit", icon: History, permission: "platform-admin:view", status: "live", summary: "Central audit across all modules (opens Platform administration → Audit)" },
       { id: "fraud-rules", label: "Fraud & risk rules", path: "/governance/fraud", icon: ShieldAlert, permission: "fraud-rules:view", status: "live", summary: "Fraud review queue, risk cases, anomaly rules, device governance, QR integrity, data integrity, SFDC reconciliation and compliance", scope: ["Central fraud review queue", "Risk case management", "Device governance", "Data integrity and reconciliation"] },
       { id: "devices", label: "Device & security", path: "/governance/fraud/devices", icon: Smartphone, permission: "devices:view", status: "live", summary: "Device and IMEI directory, shared-device visibility, login locations, device block and release" },
+      { id: "platform-admin", label: "Platform administration", path: "/governance/platform", icon: PlatformIcon, permission: "platform-admin:view", status: "live", summary: "Platform overview, SSO and role governance, configuration registry, View-As, app themes, central audit, SOW coverage, open points, performance, UAT, migration and go-live readiness", scope: ["Role and permission governance", "View-As (read-only)", "SOW coverage and open points", "UAT, migration and go-live gates"] },
+      ...(IS_SIMULATION ? [{ id: "demo-centre", label: "Client demo centre", path: "/governance/demo-centre", icon: DemoIcon, permission: "session:demo-centre", status: "live" as const, summary: "Simulation controls: personas, guided scenarios, scan simulator, integration outcomes, event timeline and demo reset (simulation builds only)" }] : []),
     ],
   },
   {
@@ -110,8 +119,16 @@ export const NAVIGATION: NavGroup[] = [
     label: "Intelligence & monitoring",
     items: [
       { id: "reports", label: "Reports & analytics", path: "/reports", icon: BarChart3, permission: "reports:view", status: "live", summary: "Business overview, KPI dictionary, engagement, points, schemes, scans, finance and programme reports, exports, schedules and threshold alerts (SOW Module 13)", scope: ["Central KPI dictionary", "Business dashboards", "Scan & QR and finance reports", "Scheduled reports and alerts"] },
+      { id: "app-usage", label: "App usage analytics", path: "/governance/platform/app-usage", icon: MousePointerClick, permission: "app-usage:view", status: "live", summary: "Screen, session and module usage of the member apps (SOW 10.12)" },
       { id: "integrations", label: "Integration monitoring", path: "/monitoring/integrations", icon: Network, permission: "integrations:view", status: "live", summary: "SOW integrations, connection health, SFDC, eSeal, message trace, sync, jobs and queues, failures, retry, reconciliation and integration audit", scope: ["Integration directory and health", "Message trace", "Retry through backend contracts", "Incidents and alerts"] },
       { id: "health", label: "System health", path: "/monitoring/integrations/system-health", icon: Activity, permission: "health:view", status: "live", summary: "API health, performance, crashes, infrastructure and incident management" },
+    ],
+  },
+  {
+    id: "future",
+    label: "Future scope",
+    items: [
+      { id: "job-management", label: "Job management & field tooling", path: "/future/job-management", icon: JobsIcon, permission: "proposed-scope:view", status: "live", proposed: true, summary: "PROPOSED SOW Module 12 — technician jobs, Siebel job handshake, rewards, Happy Points, E-ID card and field tooling. Prototype and scope decisions only; pending business approval" },
     ],
   },
   {

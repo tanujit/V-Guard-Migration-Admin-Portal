@@ -251,10 +251,23 @@ export function getEffectiveAccess(s: AccessState, userId: string): EffectiveAcc
  * Can the user perform `action` on `module`, optionally for a record in a programme/location?
  * Returns the deciding source, or the reason access is denied.
  */
+/**
+ * Session guards run inside the permission check itself, so every module's service layer is covered.
+ * View-As (SOW 10.7) registers one: while a staff member has an active read-only session, only View
+ * is allowed for them. A guard returns a refusal reason, or null to continue with the normal check.
+ */
+type SessionGuard = (userId: string, module: ModuleId, action: ActionId) => string | null;
+let sessionGuard: SessionGuard | null = null;
+export function registerSessionGuard(fn: SessionGuard | null) {
+  sessionGuard = fn;
+}
+
 export function hasPermission(s: AccessState, userId: string, module: ModuleId, action: ActionId, ctx: { programme?: string; geo?: { state?: string; district?: string; branch?: string } } = {}, access = getEffectiveAccess(s, userId)): Decision {
   const def = moduleById.get(module);
   if (!def) return { allowed: false, reason: "Unknown module" };
   if (!def.actions.includes(action)) return { allowed: false, reason: `${def.label} has no ${action} action` };
+  const blocked = sessionGuard?.(userId, module, action);
+  if (blocked) return { allowed: false, reason: blocked };
   if (!access.user) return { allowed: false, reason: "User not found" };
   if (!access.accountActive) return { allowed: false, reason: `Account is ${access.user.accountStatus.replace("_", " ")}` };
 
