@@ -684,3 +684,10 @@ export function reconciliation(uid: string) {
   ];
   return rows.map((r) => ({ ...r, difference: r.analytics - r.source, status: r.analytics === r.source ? ("matched" as const) : ("exception" as const) }));
 }
+
+/** Scan-service record feed (simulation): appends one scan record, once per scan ID. */
+export function recordScan(rec: AnalyticsState["scans"][number]): Res {
+  if (state.scans.some((x) => x.id === rec.id)) return OK(rec.id, ["Scan already recorded"]);
+  commit({ ...state, scans: [...state.scans, rec] });
+  return OK(rec.id);
+}

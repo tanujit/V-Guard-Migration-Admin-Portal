@@ -56,7 +56,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobil
       onMouseLeave: () => setTip(null),
       onFocus: (e: FocusEvent<HTMLElement>) => showTip(e.currentTarget, item),
       onBlur: () => setTip(null),
-      "aria-label": collapsed ? `${item.label}${planned ? " (planned)" : ""}` : undefined,
+      "aria-label": collapsed ? `${item.label}${planned ? " (planned)" : item.proposed ? " (proposed)" : ""}` : undefined,
       title: collapsed ? undefined : planned ? `${item.label} — coming in a later phase` : item.label,
     };
     const inner = (
@@ -66,6 +66,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobil
         </span>
         <span className="nav-item__label">{item.label}</span>
         {planned && <span className="nav-item__tag">Later</span>}
+        {item.proposed && <span className="nav-item__tag nav-item__tag--proposed">Proposed</span>}
       </>
     );
     if (item.action === "logout") {
@@ -79,7 +80,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobil
     }
     return (
       <li key={item.id}>
-        <NavLink to={item.path} end={item.path === "/" || item.exact} className={({ isActive }) => `nav-item ${isActive ? "is-active" : ""} ${planned ? "is-planned" : ""}`} onClick={onCloseMobile} {...common}>
+        <NavLink to={item.path} end={item.path === "/" || item.exact} className={({ isActive }) => `nav-item ${isActive ? "is-active" : ""} ${planned ? "is-planned" : ""} ${item.proposed ? "is-proposed" : ""}`} onClick={onCloseMobile} {...common}>
           {inner}
         </NavLink>
       </li>

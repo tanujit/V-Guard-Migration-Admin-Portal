@@ -55,6 +55,7 @@ const INTENT: Record<string, string> = {
   devices: "Block or release the device through the device governance service (mock)",
   integrations: "Record the approved integration setting (mock configuration service; backend adapters are not connected)",
   "kpi-governance": "Record the confirmed KPI definition or target as a new version in the KPI dictionary",
+  "app-themes": "Record the theme version as approved (publishing is a separate step, disabled until OP-THEME1)",
 };
 
 /**
@@ -84,6 +85,7 @@ const HANDLER_STORES: Record<string, () => Promise<unknown>> = {
   devices: () => import("@/features/risk/store"),
   integrations: () => import("@/features/ops/store"),
   "kpi-governance": () => import("@/features/analytics/store"),
+  "app-themes": () => import("@/features/platform/store"),
   "gift-catalogue": () => import("@/features/gifts/store"),
   vouchers: () => import("@/features/gifts/store"),
   insurance: () => import("@/features/gifts/store"),

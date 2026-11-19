@@ -75,6 +75,7 @@ export const REQUEST_TYPES: RequestTypeDef[] = [
   { id: "integration_config_change", module: "integrations", label: "Integration configuration change", operation: "modify", category: "configuration", fields: [] },
   { id: "kpi_definition_change", module: "kpi-governance", label: "KPI definition confirmation", operation: "modify", category: "configuration", fields: [] },
   { id: "kpi_target_change", module: "kpi-governance", label: "KPI target confirmation", operation: "modify", category: "configuration", fields: [] },
+  { id: "app_theme_publish", module: "app-themes", label: "Member app theme", operation: "modify", category: "configuration", fields: [] },
   { id: "insurance_card_publish", module: "insurance", label: "Insurance card publication", operation: "modify", category: "member", fields: [] },
   // Candidate categories from the SOW. Registered so the policy registry covers them; no workflow routes them yet.
   { id: "points_addition", module: "wallet", label: "Manual points addition", operation: "transaction", category: "financial", fields: [{ key: "member", label: "Member", kind: "text" }, { key: "balance", label: "Available balance", kind: "points", material: true }, { key: "points", label: "Points added", kind: "points", material: true }] },

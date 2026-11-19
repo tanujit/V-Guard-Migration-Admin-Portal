@@ -528,3 +528,33 @@ function syncFromApprovals() {
 }
 approvalStore.subscribe(syncFromApprovals);
 sendAlerts();
+
+/* ======================= Client Demo: simulated integration outcomes ======================= */
+
+export type SimOutcome = "success" | "validation_error" | "timeout" | "provider_failure" | "duplicate_callback";
+const SIM_OP: Record<string, { op: string; type: IntegrationRequest["messageType"]; financial?: boolean }> = {
+  "INT-SFDC": { op: "Inbound member record", type: "member" }, "INT-ESEAL": { op: "Product lookup", type: "scan" }, "INT-SIEBEL": { op: "Customer lookup", type: "ticket" }, "INT-RZP": { op: "UPI payout", type: "redemption", financial: true }, "INT-DIGI": { op: "Aadhaar verification", type: "kyc" }, "INT-SIGNZY": { op: "PAN verification", type: "kyc" }, "INT-WA": { op: "WhatsApp message", type: "communication" }, "INT-SMS": { op: "SMS message", type: "communication" }, "INT-MAPS": { op: "Reverse geocode", type: "location" }, "INT-LOGI": { op: "Shipment status", type: "logistics" },
+};
+export const SIM_INTEGRATIONS = Object.keys(SIM_OP);
+/**
+ * Presenter control (simulation only): records one request with the chosen outcome against a mock
+ * adapter, so failures, retries and traces can be shown. Nothing external is called.
+ */
+export function simulateIntegrationEvent(uid: string, integrationId: string, outcome: SimOutcome, businessRef?: string): Res & { requestId?: string } {
+  if (!can(uid, "integrations", "view")) return NO(need("integrations", "View"));
+  const spec = SIM_OP[integrationId];
+  if (!spec) return NO("Not one of the ten SOW integrations");
+  const n = state.requests.length + 1;
+  const id = `REQ-${pad(n, 6)}`;
+  const ref = businessRef?.trim() || `SIM-${integrationId.slice(4)}-${pad(n, 5)}`;
+  const fail = outcome === "validation_error" || outcome === "timeout" || outcome === "provider_failure";
+  const req: IntegrationRequest = {
+    id, integrationId, operation: outcome === "duplicate_callback" ? `${spec.op} — callback (duplicate ignored)` : spec.op, messageType: spec.type, businessRef: ref, memberId: null, at: now(), respondedAt: outcome === "timeout" ? null : now(),
+    status: outcome === "timeout" ? "timeout" : fail ? "failed" : "success", httpStatus: outcome === "validation_error" ? 422 : outcome === "provider_failure" ? 503 : outcome === "timeout" ? null : 200, durationMs: outcome === "timeout" ? 30000 : 420,
+    errorCategory: outcome === "validation_error" ? "validation" : outcome === "provider_failure" ? "http_5xx" : outcome === "timeout" ? "timeout" : null,
+    error: outcome === "validation_error" ? "Mandatory field missing (simulated)" : outcome === "provider_failure" ? "Provider unavailable (simulated)" : outcome === "timeout" ? "No response within the timeout (simulated)" : null,
+    retryCount: 0, traceId: `TRC-SIM-${pad(n, 6)}`, payload: { simulated: "yes", outcome }, sensitivePayload: false, source: "Client Demo (simulated adapter)", financial: !!spec.financial,
+  };
+  commit(audited({ ...state, requests: [...state.requests, req] }, uid, "integrations", `simulated_${outcome}`, id, ref, "Client Demo presenter control: simulated adapter, no external call", req.traceId));
+  return { ...OK(id, outcome === "duplicate_callback" ? ["Duplicate callback recognised and ignored"] : []), requestId: id };
+}

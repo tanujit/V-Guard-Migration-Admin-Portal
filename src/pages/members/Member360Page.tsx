@@ -80,6 +80,11 @@ export function Member360Page() {
           <div><dt>Branch</dt><dd>{b?.branch.name} · {b?.district.name}, {b?.state.name}</dd></div>
           <div><dt>Sales Rep</dt><dd>{m.sr ?? "—"}</dd></div>
         </dl>
+        {(can("view-as", "view") || can("view-as", "override")) && (
+          <div className="btn-row m360-actions">
+            <Link to={`/governance/platform/view-as?member=${m.id}`} className="btn btn--secondary btn--sm">View as member (read-only)</Link>
+          </div>
+        )}
         {actions.length > 0 && (
           <div className="btn-row m360-actions">
             {actions.map((a) => <button key={a.id} type="button" className={`btn btn--sm ${a.id === "block" || a.id === "hold" ? "btn--ghost" : "btn--secondary"}`} onClick={() => setDialog(a.id)}><a.icon size={14} strokeWidth={2} aria-hidden="true" />{a.label}</button>)}

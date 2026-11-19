@@ -21,12 +21,12 @@ import { schemeStore } from "@/features/schemes/store";
 import type { ApprovalRequest } from "@/types/approval";
 import type { ActionId } from "@/types/rbac";
 import type { ProgrammeCode } from "@/types/members";
-import type { FinancialException, GiftRedemption, GstOverrideRequest, PointsAdjustment, PointsReversal, PointsTransfer, RedemptionCancellation, RedemptionLimitPolicy, RetailerReserve, ServiceMode, TdsFyReconciliation, WalletState } from "@/types/wallet";
-import { cancellationEligibility, fyAssessment, gstGate, memberBalances, parseCsv, validateAdjustment, validateBatch, validateReversal, validateTransfer, type AdjustmentInput, type ReconRow } from "./engine";
+import type { RedemptionRequest, FinancialException, GiftRedemption, GstOverrideRequest, PointsAdjustment, PointsReversal, PointsTransfer, RedemptionCancellation, RedemptionLimitPolicy, RetailerReserve, ServiceMode, TdsFyReconciliation, WalletState } from "@/types/wallet";
+import { cancellationEligibility, fyAssessment, gstGate, memberBalances, redemptionBlockers, parseCsv, validateAdjustment, validateBatch, validateReversal, validateTransfer, type AdjustmentInput, type ReconRow } from "./engine";
 import { audit, executeAdjustment, executeBatch, executeCancellation, executeFyRefund, executeGift, executeGstOverride, executeReversal, executeTransfer, fetchBalance, notify, payoutCallback, post, reverseFailedRedemption } from "./mockService";
 import { adjustmentSpec, batchSpec, cancellationSpec, fyRefundSpec, giftSpec, gstOverrideSpec, limitSpec, reserveSpec, reversalSpec, transferSpec, type WalletSpec } from "./requests";
 import { buildWalletSeed } from "./seed";
-import { redemptionTds } from "./tdsAdapter";
+import { redemptionTds, scanTdsSplit } from "./tdsAdapter";
 
 const STORAGE_KEY = "vg-rishta.wallet-store.v1";
 
@@ -669,3 +669,71 @@ syncFromApprovals();
 
 export const approvalFor = (id: string | null) => reqOf(id);
 export const ledgerPost = post;
+
+/* ======================= Scan-service adapter (simulation) ======================= */
+
+/**
+ * The scan service's credit for a validated Scan-Out (SOW 4, 5.1): one posting per scan reference
+ * (idempotency key SCAN|ref), with the EP / IMP scan-time provisional TDS to the Kitty applied by the
+ * same TDS adapter the seed uses. Called by the simulated scan pipeline only; it never edits a
+ * balance directly: the mock wallet service appends ledger lines.
+ */
+export function ingestScanCredit(scan: { ref: string; memberId: string; skuCode: string; gross: number }): Res & { ledgerIds?: string[]; duplicate?: boolean; net?: number; kitty?: number } {
+  const m = memberById(mem(), scan.memberId);
+  if (!m) return NO("Member not found");
+  if (!Number.isInteger(scan.gross) || scan.gross <= 0) return NO("No points to credit for this scan");
+  if (state.service.mode !== "available") return NO(`Wallet service ${state.service.mode === "timeout" ? "timed out" : "unavailable"}: the scan is held for retry, nothing credited`);
+  const panOk = mem().documents.some((d) => d.memberId === m.id && d.type === "pan" && d.status === "approved");
+  const split = scanTdsSplit(m.programme, panOk, scan.gross, state.config);
+  const at = now();
+  const base = { memberId: m.id, programme: m.programme, branchCode: m.branchCode, at, status: "completed" as const, initiatedBy: "SCAN-SERVICE (simulated)", approvalRequestId: null, approvedBy: [] as string[] };
+  const drafts: Parameters<typeof post>[2] = [{ ...base, ref: scan.ref, type: "scan_credit", bucket: "available", points: split.net, gross: scan.gross, source: "scan", channel: "scan", skuCode: scan.skuCode, remarks: split.applies ? `Gross ${scan.gross}; ${split.ratePct}% provisional TDS to Kitty (simulated scan)` : "Scan-Out credit (simulated scan)" }];
+  if (split.kitty) drafts.push({ ...base, ref: scan.ref, type: "tds_kitty_deduction", bucket: "tds_kitty", points: split.kitty, source: "tds", channel: "system", skuCode: scan.skuCode, remarks: `Scan-time provisional TDS ${split.ratePct}%` });
+  const r = post(state, `SCAN|${scan.ref}`, drafts);
+  if (r.duplicate) return { ...OK(undefined, ["Duplicate scan reference: nothing credited twice"]), duplicate: true, ledgerIds: r.ledgerIds };
+  commit(audited(r.state, "SCAN-SERVICE", "ledger", scan.ref, "scan_credit_posted", `${split.net} points${split.kitty ? ` + ${split.kitty} to TDS Kitty` : ""}`, "Simulated scan (Client Demo)"));
+  return { ...OK(r.ledgerIds[0]), ledgerIds: r.ledgerIds, net: split.net, kitty: split.kitty };
+}
+
+/* ======================= Member-app redemption (simulation) ======================= */
+
+/**
+ * A UPI / bank (DBT) redemption as the member app would raise it (SOW 5.3): validated by the same
+ * blockers the portal shows (balance, minimum, limits, KYC, bank, restrictions, GST gate), then debited
+ * through the mock wallet service and handed to the mock payout adapter. Above ₹10,000 it waits for
+ * manual validation. Redemption-time TDS stays Business confirmation required (OP-TDS1).
+ */
+export function simulateMemberRedemption(memberId: string, method: "dbt" | "upi", points: number): Res & { redemptionId?: string; payoutId?: string } {
+  const m = memberById(mem(), memberId);
+  if (!m) return NO("Member not found");
+  if (!Number.isInteger(points) || points <= 0) return NO("Enter the points to redeem");
+  if (state.service.mode !== "available") return NO("Wallet service unavailable: try again later");
+  const blockers = redemptionBlockers(state, ss(), mem(), memberId, method, points, now().slice(0, 10));
+  if (blockers.length) return NO(...blockers.map((b) => b.reason));
+  const n = state.redemptions.reduce((x, r) => Math.max(x, Number(r.id.split("-").pop()) || 0), 0) + 1;
+  const id = `RED-${String(n).padStart(5, "0")}`;
+  const grossInr = points * state.config.pointValueInr;
+  const tdsRes = redemptionTds(m.programme);
+  const panOk = mem().documents.some((d) => d.memberId === m.id && d.type === "pan" && d.status === "approved");
+  const manual = grossInr > 10000;
+  const at = now();
+  const base = { memberId: m.id, programme: m.programme, branchCode: m.branchCode, at, status: "completed" as const, initiatedBy: "MEMBER-APP (simulated)", approvalRequestId: null, approvedBy: [] as string[] };
+  let s2 = state;
+  let debit: string | null = null;
+  if (!manual) {
+    const r = post(s2, `RED|${id}`, [{ ...base, ref: id, type: "redemption_debit", bucket: "available", points: -points, source: "redemption", channel: "redemption", remarks: `${method.toUpperCase()} redemption (simulated)` }, { ...base, ref: id, type: "redemption_debit", bucket: "redeemed", points, source: "redemption", channel: "redemption", remarks: `${method.toUpperCase()} redemption (simulated)` }]);
+    s2 = r.state;
+    debit = r.ledgerIds[0];
+  }
+  const red: RedemptionRequest = {
+    id, memberId: m.id, programme: m.programme, branchCode: m.branchCode, method, points, grossInr,
+    tds: { model: m.programme === "EP" ? "kitty_at_scan" : m.programme === "DD" ? "not_configured" : "on_redemption", status: tdsRes.status === "not_applicable" ? "not_applicable" : "bcr", panStatus: panOk ? "verified" : "not_verified", panSource: m.programme === "Retailer" ? "SFDC" : "Rishta KYC", ratePct: null, amountInr: null },
+    netInr: tdsRes.status === "not_applicable" ? grossInr : null, createdAt: at, updatedAt: at, stage: manual ? "manual_validation" : "payout_initiated", track: "in_process", blockedReasons: [],
+    manualValidation: manual ? { required: true, reason: `Single redemption ₹${grossInr.toLocaleString("en-IN")} above ₹10,000 (SOW 5.3)`, callCentreRef: null, outcome: "pending" } : { required: false, reason: "", callCentreRef: null, outcome: null },
+    fraudCheck: "passed", utr: null, externalRef: null, provider: "Mock payout adapter", debitLedgerId: debit, reversalLedgerId: null, origin: "mock_service",
+  };
+  const payoutId = manual ? undefined : `PAY-SIM-${String(n).padStart(5, "0")}`;
+  s2 = { ...s2, redemptions: [...s2.redemptions, red], payouts: payoutId ? [...s2.payouts, { id: payoutId, redemptionId: id, provider: "Mock payout adapter", amountInr: red.netInr ?? grossInr, initiatedAt: at, status: "in_process", utr: null, failureReason: null, reconciliation: "pending", callbacks: [] }] : s2.payouts };
+  commit(audited(s2, "MEMBER-APP", "redemption", id, "redemption_submitted", `${points} points · ${method.toUpperCase()}`, "Simulated member-app redemption (Client Demo)"));
+  return { ...OK(id, [manual ? "Above ₹10,000: waiting for manual validation; nothing debited yet" : "SIMULATED FINANCIAL TRANSACTION — no actual payment will be made", ...(tdsRes.status === "bcr" ? [tdsRes.message] : [])]), redemptionId: id, payoutId };
+}

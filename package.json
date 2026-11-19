@@ -17,9 +17,14 @@
     "test:gifts": "esbuild tests/gifts.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/gifts.test.cjs && node node_modules/.cache/gifts.test.cjs",
     "test:risk": "esbuild tests/risk.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/risk.test.cjs && node node_modules/.cache/risk.test.cjs",
     "test:ops": "esbuild tests/ops.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/ops.test.cjs && node node_modules/.cache/ops.test.cjs",
-    "test:analytics": "esbuild tests/analytics.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/analytics.test.cjs && node node_modules/.cache/analytics.test.cjs"
+    "test:analytics": "esbuild tests/analytics.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/analytics.test.cjs && node node_modules/.cache/analytics.test.cjs",
+    "test:platform": "esbuild tests/platform.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/platform.test.cjs && node node_modules/.cache/platform.test.cjs",
+    "test:jobs": "esbuild tests/jobs.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/jobs.test.cjs && node node_modules/.cache/jobs.test.cjs",
+    "test:demo": "esbuild tests/demo.test.ts --bundle --platform=node --tsconfig=tsconfig.json --log-level=error --outfile=node_modules/.cache/demo.test.cjs && node node_modules/.cache/demo.test.cjs",
+    "report:tests": "node scripts/collect-test-results.mjs"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^2.1.0",
     "lucide-react": "0.460.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",

@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { endSession as endViewAsSession } from "@/features/platform/viewAsSession";
 import { authAdapter } from "@/services/auth";
 import { accessLog, recordAccess } from "@/features/access/accessLog";
 import { useAccessState } from "@/features/access/store";
@@ -71,6 +72,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       can,
       decide,
       signOut: () => {
+        if (userId) endViewAsSession(userId, "sign_out");
         if (userId) recordAccess(userId, "sign_out");
         authAdapter.signOut();
         setUserId(null);
@@ -82,6 +84,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setUserId(now);
       },
       switchIdentity: (id: string) => {
+        if (userId) endViewAsSession(userId, "sign_out");
         authAdapter.signIn(id);
         recordAccess(id, "identity_switch");
         setUserId(id);
