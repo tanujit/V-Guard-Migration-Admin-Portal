@@ -1,8 +1,8 @@
-import { useMemo, type ReactNode } from "react";
+import { isValidElement, useMemo, type ReactNode } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { BarChart3, CheckCircle2, ClipboardList, Inbox, ListChecks, PlayCircle, Send, Settings2, Siren, Undo2, XCircle } from "lucide-react";
+import { BarChart3, CheckCircle2, ClipboardList, Inbox, Info, ListChecks, PlayCircle, Send, Settings2, Siren, Undo2, XCircle } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/AppShell";
-import { DemoBadge, StatusBadge } from "@/components/ui/primitives";
+import { StatusBadge } from "@/components/ui/primitives";
 import { APPROVAL_STATUS, DECIDABLE, EXECUTION_STATUS, PRIORITY, requestTypeById } from "@/config/approvalCatalogue";
 import { moduleById } from "@/config/rbacCatalogue";
 import { findBranch, findDistrict, findState } from "@/config/geography";
@@ -116,7 +116,7 @@ export function ApprovalsLayout() {
   if (!can("approvals:view")) {
     return (
       <PageContainer>
-        <PageHeader title="Approval centre" />
+        <PageHeader title="Approvals" />
         <AccessDenied message="You need Approval centre: View, which comes with a Maker or Checker profile or a governance role. Ask an Evolve Super Admin to review your access." />
       </PageContainer>
     );
@@ -125,16 +125,9 @@ export function ApprovalsLayout() {
   return (
     <PageContainer>
       <PageHeader
-        variant="hero"
         eyebrow="Governance"
         title="Approval centre"
         description="Maker-Checker requests from every module: review, decide, track execution and configure routing"
-        meta={
-          <>
-            <DemoBadge label="Mock approval data" />
-            <span className="muted small">Requests and decisions are development data stored in this browser tab. No V-Guard system is changed and no email is sent</span>
-          </>
-        }
       />
       <nav className="subnav" aria-label="Approval centre">
         <ul>
@@ -159,7 +152,40 @@ export function ApprovalsLayout() {
   );
 }
 
+/** Plain text of a React node, used to judge how long a note is. */
+function textOf(node: ReactNode): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join("");
+  if (isValidElement(node)) return textOf((node.props as { children?: ReactNode }).children);
+  return "";
+}
+
+const NOTE_MAX = 110;
+
 export function Notice({ tone = "info", icon, children, action }: { tone?: "info" | "warn" | "danger" | "ok"; icon?: ReactNode; children: ReactNode; action?: ReactNode }) {
+  if (tone === "info") {
+    const text = textOf(children);
+    if (text.length > NOTE_MAX) {
+      return (
+        <details className="note-fold">
+          <summary>
+            <Info size={14} strokeWidth={1.75} aria-hidden="true" />
+            <span>{text.split(/(?<=[.:;])\s/)[0].slice(0, NOTE_MAX).replace(/[.:;]$/, "")}</span>
+          </summary>
+          <div className="note-fold__body">{children}</div>
+          {action && <div className="note-fold__action">{action}</div>}
+        </details>
+      );
+    }
+    return (
+      <p className="note-line" role="status">
+        <Info size={14} strokeWidth={1.75} aria-hidden="true" />
+        <span>{children}</span>
+        {action}
+      </p>
+    );
+  }
   return (
     <div className={`apr-notice apr-notice--${tone}`} role={tone === "danger" ? "alert" : "status"}>
       {icon}

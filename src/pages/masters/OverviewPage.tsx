@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Activity, Boxes, CircleHelp, ClipboardCheck, FolderTree, GitBranch, History, LayoutGrid, Layers, MapPinned, PackageX, ScanLine, ShieldAlert, Tags } from "lucide-react";
+import { Activity, Boxes, CircleHelp, ClipboardCheck, FolderTree, History, LayoutGrid, Layers, MapPinned, PackageX, ScanLine, ShieldAlert, Tags } from "lucide-react";
 import { Panel } from "@/components/ui/Panel";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { ConfirmDialog } from "@/components/ui/Overlay";
@@ -60,19 +60,6 @@ export function MastersOverviewPage() {
     <>
       <SectionTitle title="Overview" description="Counts are from development data. Select a card to open the filtered list" />
       <KpiGrid items={kpis} cols={4} />
-      <div className="quick-links">
-        {[
-          { to: "/masters/products", label: "Product & SKU master", icon: Boxes },
-          { to: "/masters/categories", label: "Category & sub-category", icon: FolderTree },
-          { to: "/masters/branches", label: "Branch & hierarchy", icon: GitBranch },
-          { to: "/masters/scanning", label: "Scanning configuration", icon: ScanLine },
-        ].map((l) => (
-          <Link key={l.to} to={l.to} className="quick-link">
-            <l.icon size={18} strokeWidth={2} aria-hidden="true" />
-            {l.label}
-          </Link>
-        ))}
-      </div>
       <RecentActivity events={s.audit} />
     </>
   );

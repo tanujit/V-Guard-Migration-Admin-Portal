@@ -8,7 +8,7 @@
 .filterbar {
   position: relative;
   z-index: 2;
-  margin: -52px 12px 8px;
+  margin: 0 0 12px;
   padding: 16px 18px 18px;
   border-radius: var(--r-panel);
   background: var(--glass-bg-strong);
@@ -752,7 +752,7 @@ button.chart-legend__item:hover {
 /* ================= Responsive dashboard ================= */
 @media (max-width: 1023px) {
   .filterbar {
-    margin: -48px 12px 8px;
+    margin: 0 0 12px;
   }
   .dsec {
     padding: 0 16px;
@@ -763,7 +763,7 @@ button.chart-legend__item:hover {
 }
 @media (max-width: 767px) {
   .filterbar {
-    margin: -40px 8px 8px;
+    margin: 0 0 8px;
     padding: 14px 14px 16px;
   }
   .filterbar__toggle {

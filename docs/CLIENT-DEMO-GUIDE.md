@@ -3,7 +3,7 @@
 How to run the portal as a working simulation for V-Guard stakeholders (Build Prompt 14A).
 
 > **Everything you do in the demo is simulated.**
-> - The yellow **DEMO / SIMULATION MODE** banner is on every page.
+> - The yellow **Demo mode** banner is on every page.
 > - No V-Guard system, payment gateway, messaging provider, tax system or Siebel is contacted.
 > - Demo data lives in the presenter's browser tab only.
 > - A completed demo shows how the platform will behave. It does not mean the integrations are live
@@ -13,19 +13,17 @@ How to run the portal as a working simulation for V-Guard stakeholders (Build Pr
 
 1. Open the portal (the Vercel preview, or `npm run preview` locally).
 2. Sign in with the development identity picker. Start as **Evolve Super Admin**.
-3. Open **Governance → Client demo centre**, or use the **Demo centre** link in the banner.
+3. Open **Demo centre** in the sidebar, or use the **Demo centre** link in the banner.
 4. Choose **Reset demo data / restore initial seed** → **Confirm full reset**. The demo now starts
    from the seeded dataset.
 5. Choose **Start demo session**. The session start is used by the event timeline.
 
 ## 2. The banner
 
-The banner shows:
-- That simulation mode is on.
-- **SIMULATING AS: role — organisation** (the person behind it).
-- The dataset, last reset time and the simulation clock.
+The banner shows that demo mode is on and, under **Viewing as**, the simulated role. Hover over
+**Demo mode** to see the dataset, last reset time and simulation clock.
 
-The **role selector** in the banner switches between the ten simulated roles. Each switch changes:
+The **Viewing as** selector switches between the ten simulated roles. Each switch changes:
 - the menu;
 - the buttons and actions available;
 - the programme and geography scope;
@@ -47,7 +45,7 @@ The **role selector** in the banner switches between the ten simulated roles. Ea
 
 ## 3. Guided scenarios
 
-Open **Client demo centre → Guided scenarios**, pick a scenario and choose **Start scenario**. A
+Open **Demo centre → Guided scenarios**, pick a scenario and choose **Start scenario**. A
 guidance panel then follows you across screens. For each step it shows:
 - who performs it, with a **Switch to this role** button;
 - why the step matters;
@@ -74,7 +72,21 @@ can be shown again.
 | SC-11 | Reporting and management review | Overview → points flow → schemes → fraud → scans → export |
 | SC-12 | Proposed technician job (Proposed / Demo only) | Mock Siebel job → confirm → simulated reward; rejection and timeout earn nothing |
 
-## 4. Demo Centre tools
+## 4. Finding your way around
+
+The sidebar has one entry per area. Areas with related sections show a switcher at the top of the page:
+
+| Sidebar entry | Sections |
+| --- | --- |
+| Members | Members · Registration & KYC |
+| Redemption & gifts | Redemption · Gifts & orders |
+| Master data | Overview · Products · Categories · Branches · Scanning |
+
+Pages such as Scan & QR reports, Helpdesk, Devices, Audit trail, App usage and System health are tabs
+inside their area. **Search** (Ctrl K) finds any of them by name. Info icons beside headings explain
+what a section is for.
+
+## 5. Demo Centre tools
 
 - **Member app simulator → Scan.** One scan goes through, in order:
   - member status and restrictions;
@@ -100,7 +112,7 @@ can be shown again.
   - Needs a role with Platform administration: View.
 - **Demo data.** The seed inventory and the functional audit summary.
 
-## 5. Suggested 30-minute running order
+## 6. Suggested 30-minute running order
 
 1. **SC-02:** scan, duplicate, geo-fence. Shows the wallet, scan report and N03 changing at once.
 2. **SC-04:** Maker-Checker adjustment with the self-approval block and two approval stages.
@@ -111,7 +123,7 @@ can be shown again.
 
 Reset the scenario or the whole demo between audiences.
 
-## 6. Things to say when asked
+## 7. Things to say when asked
 
 - **"Is this connected to Siebel / SFDC / RazorPay?"** No. Every connector is a simulated adapter
   labelled Simulated. Real connections need the contracts and credentials listed in the handover.
@@ -124,7 +136,7 @@ Reset the scenario or the whole demo between audiences.
 - **"Can a Super Admin approve?"** No. Approvals always need a Checker, and the Maker can never approve
   their own request.
 
-## 7. Known demo limitations
+## 8. Known demo limitations
 
 - The simulation clock starts at 9 Nov 2026 14:30 and advances with real time. It restarts when the
   page reloads.

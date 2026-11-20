@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, ChevronRight, CircleHelp, LogOut, Menu, Search, UserRound, Users } from "lucide-react";
 import { IdentitySwitcher } from "./IdentitySwitcher";
-import { ALL_NAV_ITEMS, findNavItemByPath } from "@/config/navigation";
+import { ALL_NAV_ITEMS, NAVIGATION, activeNavItem, findNavItemByPath } from "@/config/navigation";
 import { useSession } from "@/context/SessionContext";
 import { DEMO_SYSTEM_ALERTS } from "@/data/mock/catalog";
 import { markNotificationsRead, useApprovalState } from "@/features/approvals/store";
@@ -16,11 +16,14 @@ import type { StatusTone } from "@/types/domain";
 export function useBreadcrumbs() {
   const { pathname } = useLocation();
   return useMemo(() => {
-    // Longest matching path wins, so /masters/products is not shown as the /masters overview.
+    // The sidebar hub that owns the page names it; pages outside the hubs fall back to the registry.
+    const hub = activeNavItem(pathname);
+    const group = hub && NAVIGATION.find((g) => g.items.includes(hub));
+    if (hub?.path === "/") return { title: "Dashboard", crumbs: [{ label: "Overview" }] };
+    if (hub && group) return { title: hub.label, crumbs: [{ label: "Dashboard", to: "/" }, { label: group.label }] };
     const item = findNavItemByPath(pathname) ?? [...ALL_NAV_ITEMS].sort((a, b) => b.path.length - a.path.length).find((i) => i.path !== "/" && pathname.startsWith(i.path));
     if (!item) return { title: "Page not found", crumbs: [{ label: "Dashboard", to: "/" }] };
-    if (item.path === "/") return { title: "Dashboard", crumbs: [{ label: "Overview" }] };
-    return { title: item.label, crumbs: [{ label: "Dashboard", to: "/" }, { label: item.group.label }] };
+    return { title: item.label, crumbs: [{ label: "Dashboard", to: "/" }] };
   }, [pathname]);
 }
 

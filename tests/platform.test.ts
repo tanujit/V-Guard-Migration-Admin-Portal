@@ -26,7 +26,9 @@ const RAHUL = "USR-1003", ANITA = "USR-2001", TANUJIT = "USR-1001", VIKRAM = "US
 const acc = () => accessStore.get();
 const mem = () => memberStore.get();
 const ps = () => P.platformStore.get();
-const T0 = Date.parse("2026-11-19T10:00:00Z");
+// The View-As guard inside the permission service reads the real clock, so the scripted session times
+// start from the moment the suite runs (a fixed date would look idle on any later day).
+const T0 = Math.floor(Date.now() / 60_000) * 60_000;
 const MIN = 60_000;
 
 type Kind = "deterministic" | "blocked" | "governance";

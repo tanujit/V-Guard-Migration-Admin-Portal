@@ -1,7 +1,8 @@
 /* Client Demo / simulation mode (Build Prompt 14A). */
-.sim-banner { position: sticky; top: 0; z-index: 1001; display: grid; gap: 4px; padding: 6px 16px; background: var(--vg-yellow); color: var(--vg-black); border-bottom: 2px solid var(--vg-black); font-size: var(--fs-13, 13px); }
+.sim-banner { position: sticky; top: 0; z-index: 1001; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 16px; height: var(--sim-h); padding: 0 16px; flex-wrap: nowrap; overflow: hidden; background: var(--vg-yellow); color: var(--vg-black); border-bottom: 2px solid var(--vg-black); font-size: var(--fs-13, 13px); }
 .sim-banner__main { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
-.sim-banner__main strong { letter-spacing: 0.04em; }
+.sim-banner__main strong { font-weight: 700; }
+.sim-banner__switch { display: inline-flex; align-items: center; gap: 8px; }
 .sim-banner__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
 .sim-banner__muted { color: rgba(17, 19, 24, 0.72); }
 .sim-banner__switch select { min-height: 28px; padding: 2px 8px; border: 1px solid var(--vg-black); border-radius: 8px; background: var(--vg-white); color: var(--vg-black); font: inherit; }
@@ -22,3 +23,12 @@
 .scenario-panel__guide p { margin: 0 0 4px; }
 .linkish { padding: 0; border: 0; background: none; color: var(--accent-ink); font: inherit; text-decoration: underline; cursor: pointer; }
 .scan-steps { display: grid; gap: 4px; padding-left: 18px; }
+
+/* Keep the fixed sidebar and sticky top bar clear of the demo banner. */
+:root:has(.sim-banner) { --sim-h: 38px; }
+:root:has(.sim-banner) .sidebar { top: var(--sim-h); }
+:root:has(.sim-banner) .topbar { top: var(--sim-h); }
+@media (max-width: 640px) {
+  .sim-banner__as { display: none; }
+  .sim-banner__switch select { max-width: 52vw; }
+}

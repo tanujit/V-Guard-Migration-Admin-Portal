@@ -39,7 +39,7 @@ export function DemoCentrePage() {
   }
   return (
     <PageContainer>
-      <PageHeader variant="hero" eyebrow="Platform administration · Simulation" title="Client demo centre" description="Run the portal as a working simulation: switch roles, follow guided scenarios, simulate scans and integration outcomes, watch the event timeline and reset the demo data. Every module reads the same shared demo records" meta={<span className="muted small">Environment: {APP_ENV} (set by the build, not by the browser) · {DEMO_DATASET}</span>} />
+      <PageHeader title="Demo centre" description="Run the portal as a working simulation: switch roles, follow guided scenarios, simulate scans and integration outcomes, watch the event timeline and reset the demo data. Every module reads the same shared demo records" meta={<span className="muted small">Environment: {APP_ENV} (set by the build, not by the browser) · {DEMO_DATASET}</span>} />
       <Tabs label="Demo centre sections" value={tab} onChange={setTab} tabs={[{ id: "overview", label: "Overview & controls" }, { id: "scenarios", label: "Guided scenarios" }, { id: "roles", label: "Simulated roles" }, { id: "scan", label: "Member app simulator" }, { id: "integrations", label: "Integration outcomes" }, { id: "timeline", label: "Event timeline" }, { id: "inventory", label: "Demo data" }]} />
       <div className="subnav-body">
         {tab === "overview" && <OverviewTab go={setTab} />}

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { AlertTriangle, BookCheck, Database, Eye, FlaskConical, Gauge, KeyRound, LayoutDashboard, MousePointerClick, Palette, Rocket, ScrollText, Settings2, ShieldCheck, Undo2 } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/AppShell";
-import { DemoBadge, StatusBadge } from "@/components/ui/primitives";
+import { StatusBadge } from "@/components/ui/primitives";
 import { useSession } from "@/context/SessionContext";
 import { useAccessState } from "@/features/access/store";
 import { useApprovalState, demoNow } from "@/features/approvals/store";
@@ -64,11 +64,9 @@ export function PlatformLayout() {
   return (
     <PageContainer>
       <PageHeader
-        variant="hero"
         eyebrow="Governance"
         title="Platform administration"
         description="Access and role governance, configuration, View-As, app usage and themes, central audit, SOW coverage, open points, and the evidence behind UAT, migration and go-live (SOW 10.1, 10.2, 10.7, 10.8, 10.12, 10.13, Module 14, Annexure A)"
-        meta={<><DemoBadge label="Development governance data" /><span className="muted small">Readiness shows recorded evidence only. Nothing here is a production sign-off, a measured production result or a deployment</span></>}
       />
       <nav className="ana-groups" aria-label="Platform sections">
         {groups.map((g) => <NavLink key={g.id} to={g.tabs[0].to} end={g.tabs[0].end} className={() => `ana-groups__btn ${g.id === group.id ? "is-active" : ""}`}>{g.label}</NavLink>)}

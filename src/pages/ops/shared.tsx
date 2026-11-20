@@ -22,7 +22,7 @@ export const OBASE = "/monitoring/integrations";
 export function OpsLayout() {
   return (
     <MastersLayout
-      title="Integration monitoring"
+      title="Integrations & health"
       description="SOW integrations, connection health, SFDC and eSeal data exchange, message trace, synchronisation, jobs and queues, failures, retry and reprocessing, reconciliation, system health, crashes, infrastructure, authentication, member diagnostics, adoption, redemption float and incidents (SOW Module 11, 10.11)"
       permission="integrations:view"
       eyebrow="Intelligence & monitoring"

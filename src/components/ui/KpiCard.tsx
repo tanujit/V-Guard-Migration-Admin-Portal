@@ -56,6 +56,7 @@ export function KpiCard({ metric, onSelect, variant = "light", tone, icon: Icon,
       className={`kpi-card kpi-card--${variant} ${variant === "status" ? `kpi-card--tone-${tone ?? "warning"}` : ""} ${compact ? "kpi-card--compact" : ""}`}
       onClick={() => onSelect(metric)}
       aria-label={`${metric.label}: ${valueText}${metric.format === "points" ? " points" : ""}. Open detail`}
+      title={metric.description}
     >
       {variant === "status" && <span className="kpi-card__bar" aria-hidden="true" />}
       <span className="kpi-card__top">
@@ -80,13 +81,12 @@ export function KpiCard({ metric, onSelect, variant = "light", tone, icon: Icon,
             </span>{" "}
             <span className="kpi-card__vs">{metric.comparison.label}</span>
           </span>
-        ) : (
-          <span className="kpi-card__ref">{metric.reference ?? "No comparison available"}</span>
-        )}
+        ) : metric.reference && !/^(Select to open|No comparison)/.test(metric.reference) ? (
+          <span className="kpi-card__ref">{metric.reference}</span>
+        ) : null}
         {metric.trend && <Sparkline data={metric.trend} stroke={spark.stroke} fill={spark.fill} label={`${metric.label}, ${metric.trendLabel ?? "recent history"}`} />}
       </span>
 
-      <span className="kpi-card__desc">{metric.description}</span>
     </button>
   );
 }

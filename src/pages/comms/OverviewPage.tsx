@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertOctagon, Bell, CalendarClock, CheckCircle2, ClipboardCheck, Clock3, Headset, Mail, MessageCircle, MessageSquare, PenSquare, Smartphone, Send, XCircle, Zap, ArrowUpRight } from "lucide-react";
+import { AlertOctagon, Bell, CalendarClock, CheckCircle2, ClipboardCheck, Clock3, Headset, Mail, MessageCircle, MessageSquare, PenSquare, Smartphone, Send, XCircle, Zap } from "lucide-react";
 import { Panel } from "@/components/ui/Panel";
 import { DonutChart, TrendChart } from "@/components/charts/Charts";
 import { DataTable } from "@/components/ui/DataTable";
@@ -86,7 +86,6 @@ export function CommsOverviewPage() {
           ]}
         />
       </Panel>
-      <p className="small muted"><ArrowUpRight size={12} aria-hidden="true" /> Figures are development data from mock providers. No production message volume or delivery rate is implied.</p>
     </>
   );
 }

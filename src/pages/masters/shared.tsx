@@ -3,7 +3,8 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/AppShell";
 import { KpiCard, type KpiTone, type KpiVariant } from "@/components/ui/KpiCard";
-import { DemoBadge, StatusBadge } from "@/components/ui/primitives";
+import { StatusBadge } from "@/components/ui/primitives";
+import { HubSwitcher, useHub } from "@/components/layout/HubSwitcher";
 import type { MultiOption } from "@/components/form/Form";
 import { APPROVAL_STATUS } from "@/config/approvalCatalogue";
 import { OWNERSHIP, SYNC_STATUS, VERSION_STATUS } from "@/config/scanCatalogue";
@@ -53,13 +54,17 @@ export interface TabDef {
   perm?: string;
 }
 
-export function MastersLayout({ title, description, permission, tabs, meta, eyebrow = "Masters & configuration", badge = "Development master data" }: { title: string; description: string; permission: string; tabs: TabDef[]; meta?: ReactNode; eyebrow?: string; badge?: string }) {
+// `description`, `meta`, `eyebrow` and `badge` are accepted for compatibility; the portal shows the title only.
+export function MastersLayout({ title, permission, tabs }: { title: string; description?: string; permission: string; tabs: TabDef[]; meta?: ReactNode; eyebrow?: string; badge?: string }) {
   const { can } = useSession();
   const { pathname } = useLocation();
+  const hub = useHub();
+  const inHub = hub.item && hub.sections.length > 1;
+  const heading = inHub ? hub.item!.label : title;
   if (!can(permission)) {
     return (
       <PageContainer>
-        <PageHeader title={title} />
+        <PageHeader title={heading} />
         <AccessDenied message={`You need ${permission.replace(":", ": ")}. Ask an Evolve Super Admin to review your access.`} />
       </PageContainer>
     );
@@ -69,18 +74,8 @@ export function MastersLayout({ title, description, permission, tabs, meta, eyeb
   const active = [...visible].sort((a, b) => b.to.length - a.to.length).find((t) => (t.end ? pathname === t.to : pathname.startsWith(t.to)));
   return (
     <PageContainer>
-      <PageHeader
-        variant="hero"
-        eyebrow={eyebrow}
-        title={title}
-        description={description}
-        meta={
-          <>
-            <DemoBadge label={badge} />
-            <span className="muted small">{meta ?? "Stored in this browser tab only. Nothing is written to V-Guard, SFDC or the mobile scan engine"}</span>
-          </>
-        }
-      />
+      <PageHeader title={heading} />
+      {inHub && <HubSwitcher label={heading} sections={hub.sections} active={hub.active} />}
       {visible.length > 1 && (
         <nav className="subnav" aria-label={title}>
           <ul>

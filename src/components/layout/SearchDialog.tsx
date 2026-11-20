@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { CornerDownLeft, LayoutDashboard, Search } from "lucide-react";
-import { ALL_NAV_ITEMS } from "@/config/navigation";
+import { ALL_NAV_ITEMS, activeNavItem } from "@/config/navigation";
 import { DASHBOARD_GROUPS, DASHBOARD_SECTIONS } from "@/config/dashboardSections";
 import { useSession } from "@/context/SessionContext";
 
@@ -29,7 +29,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
   const all = useMemo<Result[]>(
     () => [
       ...DASHBOARD_SECTIONS.map((s) => ({ id: `sec-${s.id}`, label: s.title, meta: `Dashboard · ${DASHBOARD_GROUPS.find((g) => g.id === s.group)?.label ?? "Section"}`, to: `/#sec-${s.id}`, planned: false, Icon: s.icon })),
-      ...ALL_NAV_ITEMS.filter((i) => can(i.permission) && !i.action).map((i) => ({ id: i.id, label: i.label, meta: i.status === "planned" ? `${i.group.label} · later phase` : i.group.label, to: i.path, planned: i.status === "planned", Icon: i.icon })),
+      ...ALL_NAV_ITEMS.filter((i) => can(i.permission) && !i.action).map((i) => ({ id: i.id, label: i.label, meta: i.status === "planned" ? "Later phase" : i.hidden ? activeNavItem(i.path)?.label ?? i.group.label : i.group.label, to: i.path, planned: i.status === "planned", Icon: i.icon })),
     ],
     [can],
   );

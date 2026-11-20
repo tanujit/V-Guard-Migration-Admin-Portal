@@ -3,7 +3,7 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { AlertTriangle, ClipboardList, Eye, History, KeyRound, Lock, Network, ShieldCheck, UserCheck, Users } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/AppShell";
 import { ConfirmDialog } from "@/components/ui/Overlay";
-import { DemoBadge, StatusBadge } from "@/components/ui/primitives";
+import { InfoTip, StatusBadge } from "@/components/ui/primitives";
 import { TextArea, TextField } from "@/components/form/Form";
 import { useSession } from "@/context/SessionContext";
 import { describeScope, TODAY, type PolicyResult } from "@/features/access/engine";
@@ -180,7 +180,7 @@ export function UsersLayout() {
   if (!can("users:view")) {
     return (
       <PageContainer>
-        <PageHeader title="User & role management" />
+        <PageHeader title="Users & roles" />
         <AccessDenied message="You need User & role management: View. Ask an Evolve Super Admin to review your access." />
       </PageContainer>
     );
@@ -188,16 +188,9 @@ export function UsersLayout() {
   return (
     <PageContainer>
       <PageHeader
-        variant="hero"
         eyebrow="Governance"
         title="User & role management"
         description="Users, organisations, roles, permissions, programme and geography scope, Maker and Checker access"
-        meta={
-          <>
-            <DemoBadge label="Mock identity data" />
-            <span className="muted small">Changes are stored in this browser tab only. No emails are sent and no identity provider is connected</span>
-          </>
-        }
       />
       <nav className="subnav" aria-label="User & role management">
         <ul>
@@ -222,8 +215,10 @@ export function SectionTitle({ title, description, actions }: { title: string; d
   return (
     <div className="sub-head">
       <div>
-        <h2 className="sub-head__title">{title}</h2>
-        {description && <p className="sub-head__desc">{description}</p>}
+        <h2 className="sub-head__title">
+          {title}
+          {description && <InfoTip label={`About ${title}`}>{description}</InfoTip>}
+        </h2>
       </div>
       {actions && <div className="sub-head__actions">{actions}</div>}
     </div>

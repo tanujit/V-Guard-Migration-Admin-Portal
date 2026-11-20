@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { AlertTriangle, Inbox, Info, RotateCw } from "lucide-react";
 import { getProgramme } from "@/config/programmes";
+import { IS_SIMULATION } from "@/config/environment";
 import type { StatusTone } from "@/types/domain";
 
 /* ---------- Programme chip (the portal's signature detail) ---------- */
@@ -29,6 +30,7 @@ export function StatusBadge({ tone, children }: { tone: StatusTone; children: Re
 /* ---------- Demo data marker ---------- */
 
 export function DemoBadge({ label = "Demo data" }: { label?: string }) {
+  if (IS_SIMULATION) return null;
   return (
     <span className="demo-badge" title="Development data generated in the browser. Not connected to V-Guard systems.">
       {label}

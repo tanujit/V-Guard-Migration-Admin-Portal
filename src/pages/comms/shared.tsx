@@ -25,7 +25,7 @@ export const CBASE = "/masters/communication";
 export function CommsLayout() {
   return (
     <MastersLayout
-      title="Communication centre"
+      title="Communication & helpdesk"
       description="Omnichannel notifications N01–N11, templates in eight languages, composer, delivery monitoring, WhatsApp bot, helpdesk, self-service content, banners and surveys (SOW Module 7 and 10.8)"
       permission="communication:view"
       badge="Development communication data"
