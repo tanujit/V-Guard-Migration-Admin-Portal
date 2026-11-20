@@ -803,6 +803,21 @@
   white-space: normal;
   line-height: 1.4;
 }
+/* On a table cell the class must keep the cell a table cell, or the row's columns collapse. */
+.table td.cell-wrap {
+  display: table-cell;
+  width: 32%;
+  min-width: 220px;
+  max-width: none;
+  white-space: normal;
+  vertical-align: top;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.table td.cell-wrap .cell-2__sub {
+  display: block;
+  margin-top: 4px;
+}
 .age__stage {
   font-size: var(--fs-12);
   color: var(--text-muted);
