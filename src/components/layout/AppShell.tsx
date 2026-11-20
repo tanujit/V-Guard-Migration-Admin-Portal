@@ -90,16 +90,14 @@ export function PageContainer({ children }: { children: ReactNode }) {
 }
 
 /**
- * Page title row. `variant="hero"` renders the dark brand banner (black → charcoal with yellow light)
- * that the dashboard uses; content pages keep the plain variant.
+ * Page title row. `variant="hero"` renders the dark brand banner used by the dashboard. Descriptions
+ * and eyebrows are accepted for compatibility but not shown: the portal keeps headers to the title.
  */
-export function PageHeader({ title, description, meta, actions, variant = "plain", eyebrow }: { title: string; description?: ReactNode; meta?: ReactNode; actions?: ReactNode; variant?: "plain" | "hero"; eyebrow?: string }) {
+export function PageHeader({ title, meta, actions, variant = "plain" }: { title: string; description?: ReactNode; meta?: ReactNode; actions?: ReactNode; variant?: "plain" | "hero"; eyebrow?: string }) {
   return (
     <div className={`page-head ${variant === "hero" ? "page-head--hero" : ""}`}>
       <div className="page-head__text">
-        {eyebrow && <p className="page-head__eyebrow">{eyebrow}</p>}
         <h1 className="page-head__title">{title}</h1>
-        {description && <p className="page-head__desc">{description}</p>}
         {meta && <div className="page-head__meta">{meta}</div>}
       </div>
       {actions && <div className="page-head__actions">{actions}</div>}

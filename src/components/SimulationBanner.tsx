@@ -22,22 +22,20 @@ export function SimulationBanner() {
   return (
     <>
       <div className="sim-banner" role="status">
-        <div className="sim-banner__main">
+        <div className="sim-banner__main" title={`${DEMO_DATASET} · reset ${session.lastResetAt ? formatDateTime(session.lastResetAt) : "never"} · simulation time ${formatDateTime(simClock())}`}>
           <FlaskConical size={16} aria-hidden="true" />
-          <strong>DEMO / SIMULATION MODE</strong>
-          <span>All transactions and integrations are simulated. No live V-Guard systems are being modified.</span>
+          <strong>Demo mode</strong>
+          <span className="sr-only">All transactions and integrations are simulated</span>
         </div>
         {user && (
           <div className="sim-banner__meta">
-            <span className="sim-banner__as">SIMULATING AS: <strong>{persona?.label ?? user.roles[0]?.label ?? "—"}</strong> — {user.organisation.name} <span className="sim-banner__muted">({user.name})</span></span>
             <label className="sim-banner__switch">
-              <span className="sr-only">Switch simulated role</span>
+              <span className="sim-banner__as">Viewing as</span>
               <select value={persona?.userId ?? ""} onChange={(e) => e.target.value && switchIdentity(e.target.value)} aria-label="Switch simulated role">
-                {!persona && <option value="">Other identity</option>}
+                {!persona && <option value="">{user.name}</option>}
                 {DEMO_PERSONAS.map((p) => <option key={p.key} value={p.userId}>{p.label}</option>)}
               </select>
             </label>
-            <span className="sim-banner__muted">{DEMO_DATASET.split(" (")[0]} · reset {session.lastResetAt ? formatDateTime(session.lastResetAt) : "never"} · simulation time {formatDateTime(simClock())}</span>
             <Link to="/governance/demo-centre" className="sim-banner__link">Demo centre</Link>
           </div>
         )}

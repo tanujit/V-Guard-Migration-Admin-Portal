@@ -3,10 +3,8 @@ import { useLocation } from "react-router-dom";
 import { ChevronsDownUp, ChevronsUpDown, RotateCw } from "lucide-react";
 import { DASHBOARD_GROUPS, DASHBOARD_SECTIONS } from "@/config/dashboardSections";
 import { PageContainer, PageHeader } from "@/components/layout/AppShell";
-import { DemoBadge } from "@/components/ui/primitives";
 import { useToast } from "@/context/ToastContext";
 import { storageGet, storageSet } from "@/lib/csv";
-import { DEMO_AS_OF, DEMO_AS_OF_TIME, longDate } from "@/data/mock/time";
 import { FilterBar } from "./FilterBar";
 import type { SectionProps } from "./DashboardSection";
 import { OverviewSection, ProgrammeSection } from "./sections/OverviewSections";
@@ -64,18 +62,9 @@ export function DashboardPage() {
   return (
     <PageContainer>
       <PageHeader
-        variant="hero"
         eyebrow="V-Guard Rishta · Operations"
         title="Dashboard"
         description="All programmes at a glance: members, scans, points, verification, finance and operations"
-        meta={
-          <>
-            <DemoBadge />
-            <span className="muted small">
-              Development data as of {longDate(DEMO_AS_OF)}, {DEMO_AS_OF_TIME}. Not connected to V-Guard systems
-            </span>
-          </>
-        }
         actions={
           <>
             <button type="button" className="btn btn--ghost btn--sm" onClick={() => setAll(!allOpen)}>

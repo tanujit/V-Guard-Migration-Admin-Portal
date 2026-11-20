@@ -23,7 +23,7 @@ export const BASE = "/schemes";
 export function SchemesLayout() {
   return (
     <MastersLayout
-      title="Scheme & Incentive Management"
+      title="Schemes & incentives"
       description="Scheme Builder, settlement, tiers, referrals, campaigns and gamification on one common scheme engine for EP, ST, CS, Retailer and DD"
       permission="schemes:view"
       eyebrow="Masters & configuration"

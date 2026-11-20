@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo, useState, type ReactNode, type RefO
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { AlertTriangle, BarChart3, BookOpen, CalendarClock, Download, FileBarChart2, FileImage, FileSpreadsheet, FileText, Gauge, Gift, History, Layers, LifeBuoy, Map, Medal, PieChart, QrCode, Radar, RefreshCw, Repeat, ShieldAlert, Siren, Trophy, UserRound, Users, Wallet, Workflow } from "lucide-react";
 import { PageContainer, PageHeader } from "@/components/layout/AppShell";
-import { DemoBadge, StatusBadge } from "@/components/ui/primitives";
+import { StatusBadge } from "@/components/ui/primitives";
 import { DATE_PRESETS, FRESHNESS_LABEL, REPORTS, type DatePreset } from "@/config/analyticsCatalogue";
 import { GEOGRAPHY } from "@/config/geography";
 import { useSession } from "@/context/SessionContext";
@@ -84,11 +84,9 @@ export function AnalyticsLayout() {
     <FilterProvider>
       <PageContainer>
         <PageHeader
-          variant="hero"
           eyebrow="Intelligence & monitoring"
           title="Reports & analytics"
           description="One KPI dictionary behind every dashboard and report: engagement, points, schemes, fraud, geography, retention, scans, finance and programme reporting, with exports, schedules and threshold alerts (SOW Module 13)"
-          meta={<><DemoBadge label="Development analytics data" /><span className="muted small">Development / demo data read from this browser's module stores. Nothing here is a live production dashboard, an approved KPI target or a validated finance report</span></>}
         />
         <nav className="ana-groups" aria-label="Analytics sections">
           {groups.map((g) => (

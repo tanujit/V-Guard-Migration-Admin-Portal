@@ -1,7 +1,7 @@
 import { useState, type FocusEvent, type MouseEvent } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { ChevronDown, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
-import { NAVIGATION, type NavItem } from "@/config/navigation";
+import { NAVIGATION, activeNavItem, type NavItem } from "@/config/navigation";
 import { useSession } from "@/context/SessionContext";
 import { storageGet, storageSet } from "@/lib/csv";
 
@@ -30,6 +30,10 @@ export function BrandMark({ size = 32 }: { size?: number }) {
 
 export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobile, onRequestSignOut }: Props) {
   const { can } = useSession();
+  const { pathname } = useLocation();
+  const current = activeNavItem(pathname);
+  const visible = (i: NavItem) => can(i.permission) || (i.sections ?? []).some((sec) => can(sec.permission));
+  const target = (i: NavItem) => (can(i.permission) ? i.path : (i.sections ?? []).find((sec) => can(sec.permission))?.path ?? i.path);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => storageGet(GROUP_KEY, {}));
   const [tip, setTip] = useState<{ label: string; top: number; planned: boolean } | null>(null);
 
@@ -48,7 +52,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobil
   };
 
   const renderItem = (item: NavItem) => {
-    if (!can(item.permission)) return null;
+    if (!visible(item)) return null;
     const Icon = item.icon;
     const planned = item.status === "planned";
     const common = {
@@ -80,7 +84,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobil
     }
     return (
       <li key={item.id}>
-        <NavLink to={item.path} end={item.path === "/" || item.exact} className={({ isActive }) => `nav-item ${isActive ? "is-active" : ""} ${planned ? "is-planned" : ""} ${item.proposed ? "is-proposed" : ""}`} onClick={onCloseMobile} {...common}>
+        <NavLink to={target(item)} end className={() => `nav-item ${current?.id === item.id ? "is-active" : ""} ${planned ? "is-planned" : ""} ${item.proposed ? "is-proposed" : ""}`} onClick={onCloseMobile} {...common}>
           {inner}
         </NavLink>
       </li>
@@ -96,7 +100,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobil
             <BrandMark />
             <span className="brand__text">
               <span className="brand__name">V-Guard Rishta</span>
-              <span className="brand__sub">Operations & governance</span>
+              <span className="brand__sub">Operations portal</span>
             </span>
           </NavLink>
           <button type="button" className="icon-btn icon-btn--dark sidebar__mobile-close" onClick={onCloseMobile} aria-label="Close navigation">
@@ -106,7 +110,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobil
 
         <nav className="sidebar__nav">
           {NAVIGATION.map((group) => {
-            const items = group.items.filter((i) => can(i.permission));
+            const items = group.items.filter((i) => !i.hidden && visible(i));
             if (!items.length) return null;
             const open = collapsed || isGroupOpen(group.id);
             return (
@@ -130,10 +134,7 @@ export function Sidebar({ collapsed, onToggleCollapsed, mobileOpen, onCloseMobil
         </nav>
 
         <div className="sidebar__foot">
-          <p className="sidebar__env">
-            <span className="sidebar__env-dot" aria-hidden="true" />
-            <span className="sidebar__env-text">Development build · demo data</span>
-          </p>
+          <span />
           <button type="button" className="icon-btn icon-btn--dark sidebar__collapse" onClick={onToggleCollapsed} aria-label={collapsed ? "Expand navigation" : "Collapse navigation"} aria-pressed={collapsed}>
             {collapsed ? <PanelLeftOpen size={18} strokeWidth={1.5} /> : <PanelLeftClose size={18} strokeWidth={1.5} />}
           </button>

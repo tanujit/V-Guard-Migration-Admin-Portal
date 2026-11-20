@@ -32,11 +32,10 @@ export function JobsLayout() {
   return (
     <PageContainer>
       <PageHeader
-        variant="hero"
         eyebrow="Future scope · Proposed"
-        title="Job management & field tooling"
+        title="Job management"
         description="SOW Module 12 (sections 12.1–12.11) is PROPOSED — not part of the agreed baseline. These screens are prototypes for evaluation and estimation. Siebel stays the system of record for jobs"
-        meta={<><span className="proposed-badge"><FlaskConical size={14} aria-hidden="true" />Proposed · pending business approval</span><span className="muted small">Demo mode: no live Siebel calls, no real job allocation, no points credited, no customer messages</span></>}
+        meta={<><span className="proposed-badge"><FlaskConical size={14} aria-hidden="true" />Proposed · pending business approval</span></>}
       />
       <nav className="ana-groups" aria-label="Module 12 sections">
         {JOB_SECTIONS.map((g) => <NavLink key={g.group} to={`${JOBS_BASE}${g.items[0].path ? `/${g.items[0].path}` : ""}`} end className={() => `ana-groups__btn ${g.group === group.group ? "is-active" : ""}`}>{g.group}</NavLink>)}

@@ -17,7 +17,6 @@ import {
   LayoutDashboard,
   LifeBuoy,
   LogOut,
-  Map,
   Megaphone,
   MessageSquareQuote,
   Network,
@@ -36,9 +35,20 @@ import {
 } from "lucide-react";
 
 /**
- * Navigation registry. Each item declares the permission that will govern its visibility once
- * RBAC lands; `phase` marks modules that are not yet implemented so they never look finished.
+ * Navigation registry. The sidebar shows one entry per hub; a hub with several sections shows a
+ * section switcher at the top of its pages. Shortcuts keep deep links reachable from search and
+ * drill-downs without repeating them in the sidebar.
  */
+export interface HubSection {
+  label: string;
+  path: string;
+  permission: string;
+  /** Extra path prefixes that belong to this section. */
+  match?: string[];
+  /** Match `path` exactly rather than as a prefix. */
+  exact?: boolean;
+}
+
 export interface NavItem {
   id: string;
   label: string;
@@ -47,15 +57,20 @@ export interface NavItem {
   /** Catalogue permission key (module:action) that governs visibility. Evaluated by the access engine. */
   permission: string;
   status: "live" | "planned";
-  /** One line describing the module's intended scope, shown on its placeholder page. */
+  /** One line describing the module's scope (search results and placeholders). */
   summary: string;
-  /** Things the module is expected to hold, used by placeholder and drill-down views. */
   scope?: string[];
   action?: "logout";
   /** Proposed scope (not in the agreed baseline): shown with a Proposed tag and its own treatment. */
   proposed?: boolean;
   /** Highlight only on an exact path match (for section landing pages). */
   exact?: boolean;
+  /** Extra path prefixes that keep this entry highlighted. */
+  match?: string[];
+  /** Sections of a hub, shown as a switcher on its pages. */
+  sections?: HubSection[];
+  /** Not shown in the sidebar: reachable from search, drill-downs and links. */
+  hidden?: boolean;
 }
 
 export interface NavGroup {
@@ -69,79 +84,104 @@ export const NAVIGATION: NavGroup[] = [
     id: "overview",
     label: "Overview",
     items: [
-      { id: "dashboard", label: "Dashboard", path: "/", icon: LayoutDashboard, permission: "dashboard:view", status: "live", summary: "Consolidated view of the V-Guard Rishta ecosystem" },
+      { id: "dashboard", label: "Dashboard", path: "/", icon: LayoutDashboard, permission: "dashboard:view", status: "live", summary: "Programme overview" },
     ],
   },
   {
     id: "operations",
-    label: "Programme operations",
+    label: "Operations",
     items: [
-      { id: "members", label: "Member management", path: "/members", icon: Users, permission: "members:view", status: "live", summary: "Search, view and govern member records across programmes", scope: ["Member search and profile", "Status changes through Maker-Checker", "Programme and geography scoped lists"] },
-      { id: "registration-kyc", label: "Registration & KYC", path: "/registration-kyc", icon: BadgeCheck, permission: "registration-kyc:view", status: "live", summary: "Registration queues, verification outcomes and KYC case handling", scope: ["Registration queues by status", "Verification outcomes", "KYC case ageing"] },
-      { id: "wallet", label: "Wallet & points", path: "/wallet", icon: Wallet, permission: "wallet:view", status: "live", summary: "Unified wallet, points ledger, adjustments, reversals, transfers, settlement, TDS, GST gate, reports and reconciliation", scope: ["Member points ledger", "Adjustments through approval", "TDS Kitty ledger kept separate"] },
-      { id: "scanning", label: "Scanning management", path: "/reports/scans", icon: QrCode, permission: "scan-reports:view", status: "live", summary: "Scan-In / Scan-Out records, QR and parent-child reports (opens Scan & QR reports)", scope: ["Scan records with filters", "Failure reasons", "Scan points issued"] },
-      { id: "redemption", label: "Redemption & fulfilment", path: "/redemption", icon: Gift, permission: "redemption:view", status: "live", summary: "Redemption requests, payouts, vouchers, products, backend gifts, cancellation, limits and EMI", scope: ["Redemption requests", "Payout status", "Gift orders and delivery"] },
-      { id: "gift-fulfilment", label: "Gift & fulfilment", path: "/gifts", icon: PackageCheck, permission: "gift-orders:view", status: "live", summary: "Gift catalogue, segment point costs, partners, vouchers, physical orders, delivery tracking, backend gifts and insurance cards", scope: ["Catalogue and point costs", "Vouchers and recovery", "Orders and delivery tracking", "Insurance cards"] },
-      { id: "tickets", label: "Tickets & support", path: "/masters/communication/helpdesk", icon: LifeBuoy, permission: "communication:view", status: "live", summary: "Helpdesk queries, bot escalations, agents and SLA (opens the Communication Centre helpdesk)", scope: ["Ticket queues", "Escalations", "SLA tracking"] },
-      { id: "geo", label: "Geo & location", path: "/masters/branches", icon: Map, permission: "branches:view", status: "live", summary: "Branch hierarchy, districts and pincodes from SFDC (opens Branch & hierarchy)", scope: ["State, district and branch views", "Location anomalies"] },
+      {
+        id: "members", label: "Members", path: "/members", icon: Users, permission: "members:view", status: "live", summary: "Member records, registration and KYC",
+        sections: [
+          { label: "Members", path: "/members", permission: "members:view" },
+          { label: "Registration & KYC", path: "/registration-kyc", permission: "registration-kyc:view" },
+        ],
+      },
+      { id: "wallet", label: "Wallet & points", path: "/wallet", icon: Wallet, permission: "wallet:view", status: "live", summary: "Wallet, ledger, adjustments, settlement, TDS and configuration" },
+      {
+        id: "redemption", label: "Redemption & gifts", path: "/redemption", icon: Gift, permission: "redemption:view", status: "live", summary: "Redemptions, payouts, gift catalogue, orders and delivery",
+        sections: [
+          { label: "Redemption", path: "/redemption", permission: "redemption:view" },
+          { label: "Gifts & orders", path: "/gifts", permission: "gift-orders:view" },
+        ],
+      },
+      { id: "schemes", label: "Schemes & incentives", path: "/schemes", icon: Workflow, permission: "schemes:view", status: "live", summary: "Scheme builder, settlement, tiers, referrals and campaigns" },
     ],
   },
   {
-    id: "masters",
-    label: "Masters & configuration",
+    id: "configuration",
+    label: "Configuration",
     items: [
-      { id: "masters-overview", label: "Master data overview", path: "/masters", icon: Database, permission: "products:view", status: "live", summary: "Products, categories, hierarchy and scanning configuration at a glance", exact: true },
-      { id: "products", label: "Product & SKU master", path: "/masters/products", icon: Boxes, permission: "products:view", status: "live", summary: "Products, SKUs, branch mapping, warranty and installation" },
-      { id: "categories", label: "Category & sub-category", path: "/masters/categories", icon: FolderTree, permission: "categories:view", status: "live", summary: "Product category hierarchy" },
-      { id: "branches", label: "Branch & hierarchy", path: "/masters/branches", icon: Building2, permission: "branches:view", status: "live", summary: "State, district and branch hierarchy with SFDC synchronisation status" },
-      { id: "scanning-config", label: "Scanning configuration", path: "/masters/scanning", icon: ScanLine, permission: "scan-config:view", status: "live", summary: "Scan-In/Scan-Out points, scan restriction rules and exception settings" },
-      { id: "schemes", label: "Schemes & incentives", path: "/schemes", icon: Workflow, permission: "schemes:view", status: "live", summary: "Scheme Builder, settlement, tiers, referrals, campaigns and gamification" },
-      { id: "financial", label: "Financial configuration", path: "/wallet/config", icon: Landmark, permission: "wallet:view", status: "live", summary: "Wallet, TDS and redemption configuration (opens Wallet configuration)" },
-      { id: "communication", label: "Communication centre", path: "/masters/communication", icon: Megaphone, permission: "communication:view", status: "live", summary: "In-app notifications, SMS and templates" },
-      { id: "content", label: "Content & testimonials", path: "/masters/communication/content", icon: MessageSquareQuote, permission: "communication:view", status: "live", summary: "Self-service content, FAQs and guides (opens Communication Centre content)" },
+      {
+        id: "masters", label: "Master data", path: "/masters", icon: Database, permission: "products:view", status: "live", summary: "Products, categories, branches and scanning configuration",
+        sections: [
+          { label: "Overview", path: "/masters", permission: "products:view", match: ["/masters/decisions", "/masters/audit"], exact: true },
+          { label: "Products", path: "/masters/products", permission: "products:view" },
+          { label: "Categories", path: "/masters/categories", permission: "categories:view" },
+          { label: "Branches", path: "/masters/branches", permission: "branches:view" },
+          { label: "Scanning", path: "/masters/scanning", permission: "scan-config:view" },
+        ],
+      },
+      { id: "communication", label: "Communication & helpdesk", path: "/masters/communication", icon: Megaphone, permission: "communication:view", status: "live", summary: "Notifications, templates, content and helpdesk" },
     ],
   },
   {
     id: "governance",
     label: "Governance",
     items: [
-      { id: "users", label: "User & role management", path: "/governance/users", icon: UserCog, permission: "users:view", status: "live", summary: "Portal users, roles, permissions and access scopes" },
-      { id: "approvals", label: "Approval centre", path: "/governance/approvals", icon: ClipboardCheck, permission: "approvals:view", status: "live", summary: "Maker-Checker queues with change comparison and history" },
-      { id: "audit", label: "Audit trail", path: "/governance/platform/audit", icon: History, permission: "platform-admin:view", status: "live", summary: "Central audit across all modules (opens Platform administration → Audit)" },
-      { id: "fraud-rules", label: "Fraud & risk rules", path: "/governance/fraud", icon: ShieldAlert, permission: "fraud-rules:view", status: "live", summary: "Fraud review queue, risk cases, anomaly rules, device governance, QR integrity, data integrity, SFDC reconciliation and compliance", scope: ["Central fraud review queue", "Risk case management", "Device governance", "Data integrity and reconciliation"] },
-      { id: "devices", label: "Device & security", path: "/governance/fraud/devices", icon: Smartphone, permission: "devices:view", status: "live", summary: "Device and IMEI directory, shared-device visibility, login locations, device block and release" },
-      { id: "platform-admin", label: "Platform administration", path: "/governance/platform", icon: PlatformIcon, permission: "platform-admin:view", status: "live", summary: "Platform overview, SSO and role governance, configuration registry, View-As, app themes, central audit, SOW coverage, open points, performance, UAT, migration and go-live readiness", scope: ["Role and permission governance", "View-As (read-only)", "SOW coverage and open points", "UAT, migration and go-live gates"] },
-      ...(IS_SIMULATION ? [{ id: "demo-centre", label: "Client demo centre", path: "/governance/demo-centre", icon: DemoIcon, permission: "session:demo-centre", status: "live" as const, summary: "Simulation controls: personas, guided scenarios, scan simulator, integration outcomes, event timeline and demo reset (simulation builds only)" }] : []),
+      { id: "users", label: "Users & roles", path: "/governance/users", icon: UserCog, permission: "users:view", status: "live", summary: "Portal users, roles, permissions and scope" },
+      { id: "approvals", label: "Approvals", path: "/governance/approvals", icon: ClipboardCheck, permission: "approvals:view", status: "live", summary: "Maker-Checker requests and workflows" },
+      { id: "fraud-rules", label: "Fraud & risk", path: "/governance/fraud", icon: ShieldAlert, permission: "fraud-rules:view", status: "live", summary: "Fraud queue, risk cases, rules and devices" },
+      { id: "platform-admin", label: "Platform administration", path: "/governance/platform", icon: PlatformIcon, permission: "platform-admin:view", status: "live", summary: "Access governance, configuration, View-As, audit and readiness" },
     ],
   },
   {
-    id: "intelligence",
-    label: "Intelligence & monitoring",
+    id: "insights",
+    label: "Insights",
     items: [
-      { id: "reports", label: "Reports & analytics", path: "/reports", icon: BarChart3, permission: "reports:view", status: "live", summary: "Business overview, KPI dictionary, engagement, points, schemes, scans, finance and programme reports, exports, schedules and threshold alerts (SOW Module 13)", scope: ["Central KPI dictionary", "Business dashboards", "Scan & QR and finance reports", "Scheduled reports and alerts"] },
-      { id: "app-usage", label: "App usage analytics", path: "/governance/platform/app-usage", icon: MousePointerClick, permission: "app-usage:view", status: "live", summary: "Screen, session and module usage of the member apps (SOW 10.12)" },
-      { id: "integrations", label: "Integration monitoring", path: "/monitoring/integrations", icon: Network, permission: "integrations:view", status: "live", summary: "SOW integrations, connection health, SFDC, eSeal, message trace, sync, jobs and queues, failures, retry, reconciliation and integration audit", scope: ["Integration directory and health", "Message trace", "Retry through backend contracts", "Incidents and alerts"] },
-      { id: "health", label: "System health", path: "/monitoring/integrations/system-health", icon: Activity, permission: "health:view", status: "live", summary: "API health, performance, crashes, infrastructure and incident management" },
+      { id: "reports", label: "Reports & analytics", path: "/reports", icon: BarChart3, permission: "reports:view", status: "live", summary: "Dashboards, reports, exports and alerts" },
+      { id: "integrations", label: "Integrations & health", path: "/monitoring/integrations", icon: Network, permission: "integrations:view", status: "live", summary: "Integration health, failures, retries and system health", match: ["/monitoring"] },
     ],
   },
+  ...(IS_SIMULATION
+    ? [{ id: "demo", label: "Demo", items: [{ id: "demo-centre", label: "Demo centre", path: "/governance/demo-centre", icon: DemoIcon, permission: "session:demo-centre", status: "live" as const, summary: "Roles, guided scenarios, simulators and reset" }] }]
+    : []),
   {
     id: "future",
     label: "Future scope",
     items: [
-      { id: "job-management", label: "Job management & field tooling", path: "/future/job-management", icon: JobsIcon, permission: "proposed-scope:view", status: "live", proposed: true, summary: "PROPOSED SOW Module 12 — technician jobs, Siebel job handshake, rewards, Happy Points, E-ID card and field tooling. Prototype and scope decisions only; pending business approval" },
-    ],
-  },
-  {
-    id: "account",
-    label: "Account",
-    items: [
-      { id: "profile", label: "Profile & preferences", path: "/account/profile", icon: CircleUser, permission: "profile:view", status: "planned", summary: "Your details, notification preferences and sessions" },
-      { id: "logout", label: "Sign out", path: "/signed-out", icon: LogOut, permission: "session:signout", status: "live", summary: "End your session", action: "logout" },
+      { id: "job-management", label: "Job management", path: "/future/job-management", icon: JobsIcon, permission: "proposed-scope:view", status: "live", proposed: true, summary: "Proposed Module 12: technician jobs and field tooling, pending business approval" },
     ],
   },
 ];
 
-export const ALL_NAV_ITEMS = NAVIGATION.flatMap((g) => g.items.map((i) => ({ ...i, group: g })));
+/**
+ * Deep links that used to repeat in the sidebar. They stay searchable and drillable, and keep the
+ * ids other modules refer to.
+ */
+export const SHORTCUTS: NavItem[] = [
+  { id: "registration-kyc", label: "Registration & KYC", path: "/registration-kyc", icon: BadgeCheck, permission: "registration-kyc:view", status: "live", summary: "Registration queues and KYC review", hidden: true },
+  { id: "gift-fulfilment", label: "Gifts & orders", path: "/gifts", icon: PackageCheck, permission: "gift-orders:view", status: "live", summary: "Gift catalogue, vouchers, orders and delivery", hidden: true },
+  { id: "scanning", label: "Scan & QR reports", path: "/reports/scans", icon: QrCode, permission: "scan-reports:view", status: "live", summary: "Scan-In / Scan-Out records and failures", hidden: true },
+  { id: "tickets", label: "Helpdesk", path: "/masters/communication/helpdesk", icon: LifeBuoy, permission: "communication:view", status: "live", summary: "Helpdesk queries, escalations and SLA", hidden: true },
+  { id: "content", label: "Content", path: "/masters/communication/content", icon: MessageSquareQuote, permission: "communication:view", status: "live", summary: "Content, FAQs and guides", hidden: true },
+  { id: "products", label: "Products & SKUs", path: "/masters/products", icon: Boxes, permission: "products:view", status: "live", summary: "Products, SKUs and imports", hidden: true },
+  { id: "categories", label: "Categories", path: "/masters/categories", icon: FolderTree, permission: "categories:view", status: "live", summary: "Category hierarchy", hidden: true },
+  { id: "branches", label: "Branches & geography", path: "/masters/branches", icon: Building2, permission: "branches:view", status: "live", summary: "State, district and branch hierarchy", hidden: true },
+  { id: "scanning-config", label: "Scanning configuration", path: "/masters/scanning", icon: ScanLine, permission: "scan-config:view", status: "live", summary: "Scan points, restriction rules and exceptions", hidden: true },
+  { id: "financial", label: "Wallet configuration", path: "/wallet/config", icon: Landmark, permission: "wallet:view", status: "live", summary: "Wallet, TDS and redemption settings", hidden: true },
+  { id: "audit", label: "Audit trail", path: "/governance/platform/audit", icon: History, permission: "platform-admin:view", status: "live", summary: "Central audit across modules", hidden: true },
+  { id: "devices", label: "Devices", path: "/governance/fraud/devices", icon: Smartphone, permission: "devices:view", status: "live", summary: "Device directory, block and release", hidden: true },
+  { id: "app-usage", label: "App usage", path: "/governance/platform/app-usage", icon: MousePointerClick, permission: "app-usage:view", status: "live", summary: "Member app screen and session usage", hidden: true },
+  { id: "health", label: "System health", path: "/monitoring/integrations/system-health", icon: Activity, permission: "health:view", status: "live", summary: "API health, crashes and incidents", hidden: true },
+  { id: "profile", label: "Profile & preferences", path: "/account/profile", icon: CircleUser, permission: "profile:view", status: "planned", summary: "Your details and preferences", hidden: true },
+  { id: "logout", label: "Sign out", path: "/signed-out", icon: LogOut, permission: "session:signout", status: "live", summary: "End your session", action: "logout", hidden: true },
+];
+
+const SHORTCUT_GROUP: NavGroup = { id: "shortcuts", label: "Shortcuts", items: SHORTCUTS };
+
+export const ALL_NAV_ITEMS = [...NAVIGATION, SHORTCUT_GROUP].flatMap((g) => g.items.map((i) => ({ ...i, group: g })));
 
 export function findNavItemByPath(pathname: string) {
   return ALL_NAV_ITEMS.find((i) => i.path === pathname);
@@ -149,4 +189,40 @@ export function findNavItemByPath(pathname: string) {
 
 export function findNavItem(id: string) {
   return ALL_NAV_ITEMS.find((i) => i.id === id);
+}
+
+const under = (pathname: string, prefix: string) => pathname === prefix || pathname.startsWith(`${prefix}/`);
+
+function sectionMatches(sec: HubSection, pathname: string) {
+  return (sec.exact ? pathname === sec.path : under(pathname, sec.path)) || (sec.match ?? []).some((m) => under(pathname, m));
+}
+
+/** Length of the most specific prefix of `item` that matches `pathname` (0 when none). */
+export function navMatchLength(item: NavItem, pathname: string): number {
+  if (item.path === "/") return pathname === "/" ? 1 : 0;
+  const hits = [
+    ...(item.sections ?? []).filter((s) => sectionMatches(s, pathname)).map((s) => s.path),
+    ...[item.path, ...(item.match ?? [])].filter((p) => under(pathname, p)),
+  ];
+  return hits.reduce((n, p) => Math.max(n, p.length), 0);
+}
+
+/** The sidebar entry that owns `pathname`: the most specific match wins. */
+export function activeNavItem(pathname: string): NavItem | undefined {
+  let best: NavItem | undefined;
+  let len = 0;
+  for (const g of NAVIGATION)
+    for (const i of g.items) {
+      const n = navMatchLength(i, pathname);
+      if (n > len) {
+        best = i;
+        len = n;
+      }
+    }
+  return best;
+}
+
+/** The hub section shown for `pathname`. */
+export function activeSection(item: NavItem, pathname: string): HubSection | undefined {
+  return [...(item.sections ?? [])].sort((a, b) => b.path.length - a.path.length).find((s) => sectionMatches(s, pathname));
 }

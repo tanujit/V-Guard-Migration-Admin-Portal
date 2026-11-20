@@ -6,7 +6,7 @@
 .subnav {
   position: relative;
   z-index: 2;
-  margin: -44px 12px 0;
+  margin: 0;
   padding: 6px;
   border-radius: var(--r-panel);
   background: var(--glass-bg-strong);
@@ -1528,7 +1528,7 @@
 /* ---------------- Responsive ---------------- */
 @media (max-width: 1023px) {
   .subnav {
-    margin: -40px 8px 0;
+    margin: 0;
   }
   .geo-pickers,
   .form-grid--3 {
